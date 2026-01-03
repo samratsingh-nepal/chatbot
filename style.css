@@ -1,379 +1,617 @@
-const chatMessages = document.getElementById('chat-messages');
-const optionsContainer = document.getElementById('options-container');
-const quickActions = document.querySelector('.action-buttons');
-const progressFill = document.getElementById('progress-fill');
-const currentStep = document.getElementById('current-step');
-const prevBtn = document.getElementById('prev-btn');
-const nextBtn = document.getElementById('next-btn');
-const clearChatBtn = document.getElementById('clear-chat');
+:root {
+    --primary-blue: #1a56db;
+    --secondary-blue: #3b82f6;
+    --light-blue: #e0f2fe;
+    --dark-blue: #1e3a8a;
+    --accent-green: #10b981;
+    --accent-orange: #f59e0b;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+    --radius-md: 10px;
+    --radius-lg: 16px;
+}
 
-// 2026 Enhanced Knowledge Base
-const knowledgeBase = {
-    destinations: [
-        { id: "canada", name: "🇨🇦 Canada", color: "primary" },
-        { id: "usa", name: "🇺🇸 United States", color: "primary" },
-        { id: "uk", name: "🇬🇧 United Kingdom", color: "primary" },
-        { id: "australia", name: "🇦🇺 Australia", color: "primary" },
-        { id: "newzealand", name: "🇳🇿 New Zealand", color: "" },
-        { id: "germany", name: "🇩🇪 Germany", color: "" },
-        { id: "japan", name: "🇯🇵 Japan", color: "" },
-        { id: "ireland", name: "🇮🇪 Ireland", color: "" }
-    ],
-    
-    topics: [
-        { id: "admissions", name: "📝 Admissions Requirements", icon: "fas fa-file-alt" },
-        { id: "scholarships", name: "💰 Scholarships & Funding", icon: "fas fa-award" },
-        { id: "visa", name: "🛂 Visa & Documentation", icon: "fas fa-passport" },
-        { id: "cost", name: "💵 Cost of Living", icon: "fas fa-money-bill-wave" },
-        { id: "work", name: "💼 Work Opportunities", icon: "fas fa-briefcase" },
-        { id: "deadlines", name: "⏰ 2026 Deadlines", icon: "fas fa-calendar-check" }
-    ],
-    
-    details: {
-        "canada": {
-            "admissions": {
-                title: "Canada Admissions 2026",
-                content: "For September 2026 intake, most universities require:<br><br>" +
-                        "• <span class='highlight'>IELTS: 6.5</span> overall (no band below 6.0) or <span class='highlight'>PTE: 58+</span><br>" +
-                        "• <span class='highlight'>Deadlines:</span> Jan-Mar 2026 for most programs<br>" +
-                        "• <span class='highlight'>SDS Stream:</span> Requires upfront tuition payment & GIC of CAD 20,635<br>" +
-                        "• Popular programs for Nepali students: Business, IT, Engineering, Healthcare"
-            },
-            "scholarships": {
-                title: "Canada Scholarships 2026",
-                content: "Major scholarship opportunities:<br><br>" +
-                        "• <span class='highlight'>Lester B. Pearson International Scholarship</span> - Full tuition at University of Toronto<br>" +
-                        "• <span class='highlight'>Vanier Canada Graduate Scholarships</span> - CAD 50,000/year for PhD<br>" +
-                        "• <span class='highlight'>University Entrance Awards</span> - Automatic consideration with 3.5+ GPA<br>" +
-                        "• Provincial scholarships available in BC, Ontario, Alberta"
-            },
-            "visa": {
-                title: "Canada Visa Requirements",
-                content: "2026 Student Direct Stream (SDS) requirements:<br><br>" +
-                        "• <span class='highlight'>GIC:</span> CAD 20,635 in designated bank<br>" +
-                        "• <span class='highlight'>Medical Exam:</span> From panel physicians<br>" +
-                        "• <span class='highlight'>NOC from MoEST:</span> Mandatory for Nepali students (NPR 2,000)<br>" +
-                        "• <span class='highlight'>Processing Time:</span> 20-45 calendar days for SDS"
-            }
-        },
-        "australia": {
-            "admissions": {
-                title: "Australia Admissions 2026",
-                content: "Key requirements for 2026 intake:<br><br>" +
-                        "• <span class='highlight'>Genuine Student (GS) requirement:</span> Strong SOP crucial<br>" +
-                        "• <span class='highlight'>IELTS:</span> 6.0 for UG, 6.5 for PG (no band below 5.5)<br>" +
-                        "• <span class='highlight'>Financial Proof:</span> NPR 45-55 Lakhs from A-class banks<br>" +
-                        "• Popular: IT at UTS, Nursing at UQ, Business at Monash"
-            },
-            "visa": {
-                title: "Australia Visa & Financials",
-                content: "Student Visa (Subclass 500) requirements:<br><br>" +
-                        "• <span class='highlight'>Bank Balance:</span> Show NPR 45-55 Lakhs for 1st year<br>" +
-                        "• <span class='highlight'>Overseas Student Health Cover (OSHC):</span> Mandatory<br>" +
-                        "• <span class='highlight'>Genuine Temporary Entrant (GTE):</span> Critical for approval<br>" +
-                        "• <span class='highlight'>Post-study Work:</span> 2-6 years depending on qualification"
-            }
-        },
-        "common": {
-            "noc": "All Nepali students must obtain a <span class='highlight'>No Objection Certificate (NOC)</span> from the MoEST portal. Process takes 7-10 working days with NPR 2,000 fee.",
-            "timeline": "Start applications 12-15 months before intake. Allow 2-3 months for visa processing."
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(135deg, #f6f9ff 0%, #f0f7ff 100%);
+    color: var(--gray-900);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.main-container {
+    display: flex;
+    width: 1200px;
+    height: 800px;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 300px;
+    background: linear-gradient(180deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo-container {
+    margin-bottom: 40px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.logo i {
+    font-size: 32px;
+    color: var(--accent-green);
+}
+
+.logo h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.logo span {
+    color: var(--accent-green);
+    font-weight: 600;
+}
+
+.subtitle {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-left: 44px;
+}
+
+.info-panel {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.info-panel h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--light-blue);
+}
+
+.info-panel ul {
+    list-style: none;
+    margin-bottom: 25px;
+}
+
+.info-panel li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-panel li i {
+    color: var(--accent-green);
+}
+
+.quick-stats {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.quick-stats h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+}
+
+.stat .value {
+    font-weight: 600;
+    color: var(--accent-green);
+}
+
+.contact-widget {
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.contact-widget p {
+    font-size: 14px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.contact-btn {
+    background: var(--accent-green);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.contact-btn:hover {
+    background: #0da271;
+    transform: translateY(-2px);
+}
+
+/* Chat Interface Styles */
+.chat-interface {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--gray-50);
+}
+
+.chat-header {
+    background: white;
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+
+.header-text h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--gray-700);
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--gray-200);
+    background: white;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-blue), var(--accent-green));
+    width: 33%;
+    transition: width 0.5s ease;
+    border-radius: 3px;
+}
+
+.progress-text {
+    font-size: 14px;
+    color: var(--gray-700);
+    font-weight: 500;
+}
+
+/* Chat Messages Area */
+.chat-wrapper {
+    flex: 1;
+    padding: 25px 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-banner {
+    background: linear-gradient(135deg, var(--light-blue) 0%, #dbeafe 100%);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 25px;
+    border-left: 4px solid var(--primary-blue);
+}
+
+.welcome-content h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.welcome-content p {
+    color: var(--gray-700);
+    font-size: 14px;
+}
+
+.chat-messages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    line-height: 1.5;
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message.bot {
+    align-self: flex-start;
+    background: white;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    border-top-left-radius: 4px;
+}
+
+.message.bot:before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 0;
+    border-width: 0 8px 8px 0;
+    border-style: solid;
+    border-color: transparent var(--gray-200) transparent transparent;
+}
+
+.message.user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: white;
+    border-top-right-radius: 4px;
+}
+
+.message.user:before {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 0;
+    border-width: 0 0 8px 8px;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--primary-blue);
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.message-content {
+    font-size: 14px;
+}
+
+.message-content ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.message-content li {
+    margin-bottom: 5px;
+}
+
+.highlight {
+    background: var(--light-blue);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+.quick-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--gray-300);
+}
+
+.quick-actions h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    margin-bottom: 15px;
+    color: var(--gray-700);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--gray-300);
+    border-radius: 50px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.action-btn:hover {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+/* Interaction Area */
+.interaction-area {
+    background: white;
+    border-top: 1px solid var(--gray-200);
+    padding: 20px 30px;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.option-btn {
+    padding: 14px 20px;
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    color: var(--gray-900);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-size: 15px;
+}
+
+.option-btn:hover {
+    border-color: var(--primary-blue);
+    background: var(--light-blue);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.option-btn.primary {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
+.option-btn.primary:hover {
+    background: var(--dark-blue);
+}
+
+.option-btn.secondary {
+    background: var(--accent-green);
+    color: white;
+    border-color: var(--accent-green);
+}
+
+.navigation-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.nav-btn {
+    padding: 12px 24px;
+    border: 1px solid var(--gray-300);
+    border-radius: 50px;
+    background: white;
+    color: var(--gray-700);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: var(--gray-100);
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.nav-btn.primary {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
+.nav-btn.primary:hover:not(:disabled) {
+    background: var(--dark-blue);
+}
+
+.chat-history {
+    display: flex;
+    gap: 8px;
+}
+
+.disclaimer {
+    margin-top: 20px;
+    padding: 12px;
+    background: #fffbeb;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-orange);
+    font-size: 12px;
+    color: var(--gray-700);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.disclaimer i {
+    color: var(--accent-orange);
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-container {
+        width: 95%;
+        height: 90vh;
     }
-};
-
-let conversationHistory = [];
-let currentState = {
-    step: 1,
-    selectedCountry: null,
-    selectedTopic: null,
-    previousStep: null
-};
-
-// Initialize chat
-function initChat() {
-    addBotMessage("Namaste! I'm your 2026 Study Abroad Assistant. I'll help you navigate admissions, scholarships, and visa processes for major study destinations. Where would you like to study?");
-    showDestinationOptions();
-    updateProgress();
-    setupQuickActions();
-}
-
-// Add message to chat
-function addMessage(content, sender, title = null) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${sender}`;
     
-    let messageHTML = '';
-    if (title && sender === 'bot') {
-        messageHTML += `<div class="message-header"><i class="fas fa-robot"></i> ${title}</div>`;
-    } else if (sender === 'user') {
-        messageHTML += `<div class="message-header"><i class="fas fa-user"></i> You</div>`;
-    }
-    
-    messageHTML += `<div class="message-content">${content}</div>`;
-    messageDiv.innerHTML = messageHTML;
-    
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    // Save to history
-    conversationHistory.push({
-        sender,
-        content,
-        title,
-        timestamp: new Date().toISOString()
-    });
-}
-
-function addBotMessage(content, title = "Study Abroad Assistant") {
-    addMessage(content, 'bot', title);
-}
-
-function addUserMessage(content) {
-    addMessage(content, 'user');
-}
-
-// Show destination options
-function showDestinationOptions() {
-    optionsContainer.innerHTML = '';
-    knowledgeBase.destinations.forEach(dest => {
-        const btn = document.createElement('button');
-        btn.className = `option-btn ${dest.color}`;
-        btn.innerHTML = dest.name;
-        btn.onclick = () => selectDestination(dest.id);
-        optionsContainer.appendChild(btn);
-    });
-    
-    currentState.step = 1;
-    updateProgress();
-    updateNavigation();
-}
-
-// Select destination
-function selectDestination(countryId) {
-    const country = knowledgeBase.destinations.find(d => d.id === countryId);
-    currentState.selectedCountry = countryId;
-    currentState.previousStep = currentState.step;
-    
-    addUserMessage(country.name);
-    
-    setTimeout(() => {
-        addBotMessage(`Great choice! ${country.name.split(' ')[1]} is a popular destination for Nepali students. What would you like to know about studying there?`, `${country.name.split(' ')[1]} Information`);
-        showTopicOptions();
-    }, 500);
-}
-
-// Show topic options
-function showTopicOptions() {
-    optionsContainer.innerHTML = '';
-    knowledgeBase.topics.forEach(topic => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `<i class="${topic.icon}"></i> ${topic.name}`;
-        btn.onclick = () => selectTopic(topic.id);
-        optionsContainer.appendChild(btn);
-    });
-    
-    // Add back button
-    const backBtn = document.createElement('button');
-    backBtn.className = 'option-btn secondary';
-    backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Choose Another Country';
-    backBtn.onclick = showDestinationOptions;
-    optionsContainer.appendChild(backBtn);
-    
-    currentState.step = 2;
-    updateProgress();
-    updateNavigation();
-}
-
-// Select topic
-function selectTopic(topicId) {
-    const topic = knowledgeBase.topics.find(t => t.id === topicId);
-    currentState.selectedTopic = topicId;
-    
-    addUserMessage(topic.name);
-    
-    setTimeout(() => {
-        showTopicDetails(topicId);
-    }, 500);
-}
-
-// Show topic details
-function showTopicDetails(topicId) {
-    const country = currentState.selectedCountry;
-    const topic = knowledgeBase.topics.find(t => t.id === topicId);
-    
-    let content = "";
-    let title = "";
-    
-    if (knowledgeBase.details[country] && knowledgeBase.details[country][topicId]) {
-        content = knowledgeBase.details[country][topicId].content;
-        title = knowledgeBase.details[country][topicId].title;
-    } else {
-        content = `Detailed information about ${topic.name.toLowerCase()} for ${country.toUpperCase()} is being updated for 2026. Please check back soon or book a consultation for the latest details.`;
-        title = `${country.toUpperCase()} ${topic.name}`;
-    }
-    
-    // Add common NOC info for visa topics
-    if (topicId === 'visa' && knowledgeBase.common.noc) {
-        content += `<br><br><strong>For all Nepali students:</strong><br>${knowledgeBase.common.noc}`;
-    }
-    
-    addBotMessage(content, title);
-    
-    // Show action buttons
-    setTimeout(() => {
-        showActionButtons();
-    }, 300);
-}
-
-// Show action buttons after details
-function showActionButtons() {
-    optionsContainer.innerHTML = '';
-    
-    const actionBtns = [
-        { text: '📋 Compare with Another Country', action: showDestinationOptions, class: '' },
-        { text: '📚 Explore Another Topic', action: showTopicOptions, class: '' },
-        { text: '📅 Book Free Consultation', action: bookConsultation, class: 'primary' },
-        { text: '🔄 Start New Search', action: resetChat, class: 'secondary' }
-    ];
-    
-    actionBtns.forEach(btn => {
-        const button = document.createElement('button');
-        button.className = `option-btn ${btn.class}`;
-        button.innerHTML = btn.text;
-        button.onclick = btn.action;
-        optionsContainer.appendChild(button);
-    });
-    
-    currentState.step = 3;
-    updateProgress();
-    updateNavigation();
-}
-
-// Setup quick actions
-function setupQuickActions() {
-    const quickTopics = [
-        { text: '🇨🇦 Canada SDS', action: () => quickSelect('canada', 'visa') },
-        { text: '🇦🇺 Australia GS', action: () => quickSelect('australia', 'admissions') },
-        { text: '💰 Top Scholarships', action: () => quickSelect('canada', 'scholarships') },
-        { text: '📅 2026 Deadlines', action: () => quickSelect('common', 'deadlines') }
-    ];
-    
-    quickActions.innerHTML = '';
-    quickTopics.forEach(topic => {
-        const btn = document.createElement('button');
-        btn.className = 'action-btn';
-        btn.innerHTML = topic.text;
-        btn.onclick = topic.action;
-        quickActions.appendChild(btn);
-    });
-}
-
-function quickSelect(country, topic) {
-    if (country === 'common') {
-        addBotMessage(knowledgeBase.common[topic] || "Common information about deadlines: Most Fall 2026 intakes have deadlines between December 2025 and March 2026. Start your preparation at least 12 months in advance.", "2026 Timeline");
-        showActionButtons();
-    } else {
-        currentState.selectedCountry = country;
-        currentState.selectedTopic = topic;
-        
-        const countryName = knowledgeBase.destinations.find(d => d.id === country).name;
-        addUserMessage(`Quick select: ${countryName} - ${topic}`);
-        
-        setTimeout(() => {
-            showTopicDetails(topic);
-        }, 500);
+    .sidebar {
+        width: 250px;
     }
 }
 
-// Update progress bar
-function updateProgress() {
-    const progressPercent = (currentState.step / 3) * 100;
-    progressFill.style.width = `${progressPercent}%`;
-    currentStep.textContent = currentState.step;
-}
-
-// Update navigation buttons
-function updateNavigation() {
-    prevBtn.disabled = currentState.step === 1;
-    nextBtn.disabled = currentState.step === 3;
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
     
-    if (currentState.step === 3) {
-        nextBtn.innerHTML = 'Finish <i class="fas fa-check"></i>';
-        nextBtn.onclick = finishChat;
-    } else {
-        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
-        nextBtn.onclick = nextStep;
+    .sidebar {
+        width: 100%;
+        padding: 20px;
+    }
+    
+    .options-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
-
-function nextStep() {
-    if (currentState.step === 1 && currentState.selectedCountry) {
-        showTopicOptions();
-    } else if (currentState.step === 2 && currentState.selectedTopic) {
-        showTopicDetails(currentState.selectedTopic);
-    }
-}
-
-prevBtn.onclick = () => {
-    if (currentState.step === 2) {
-        showDestinationOptions();
-    } else if (currentState.step === 3) {
-        showTopicOptions();
-    }
-};
-
-function finishChat() {
-    addBotMessage("Thank you for using GlobalEd Connect! Would you like to export this chat or book a consultation with our experts?", "Chat Summary");
-    
-    optionsContainer.innerHTML = `
-        <button class="option-btn primary" onclick="bookConsultation()">
-            <i class="fas fa-calendar-alt"></i> Book Free Consultation
-        </button>
-        <button class="option-btn" onclick="exportChat()">
-            <i class="fas fa-download"></i> Export Chat
-        </button>
-        <button class="option-btn secondary" onclick="resetChat()">
-            <i class="fas fa-redo"></i> New Conversation
-        </button>
-    `;
-}
-
-function bookConsultation() {
-    addUserMessage("Book consultation");
-    addBotMessage("Our expert counselors will contact you within 24 hours. In the meantime, you can visit our Kathmandu office at:<br><br><strong>GlobalEd Connect Nepal</strong><br>Durbar Marg, Kathmandu<br>Phone: +977-1-4223456<br>Email: nepal@globaledconnect.com", "Consultation Booked");
-}
-
-function exportChat() {
-    const chatText = conversationHistory.map(entry => 
-        `${entry.sender === 'bot' ? 'Advisor' : 'You'}: ${entry.content.replace(/<[^>]*>/g, '')}`
-    ).join('\n\n');
-    
-    const blob = new Blob([chatText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `StudyAbroadChat_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-
-function resetChat() {
-    conversationHistory = [];
-    currentState = {
-        step: 1,
-        selectedCountry: null,
-        selectedTopic: null,
-        previousStep: null
-    };
-    
-    chatMessages.innerHTML = '';
-    initChat();
-}
-
-clearChatBtn.onclick = resetChat;
-
-// Initialize chat when page loads
-document.addEventListener('DOMContentLoaded', initChat);
