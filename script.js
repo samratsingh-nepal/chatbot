@@ -1,485 +1,519 @@
-// DOM Elements
-const chatMessages = document.getElementById('chat-messages');
-const messageInput = document.getElementById('message-input');
-const sendBtn = document.getElementById('send-btn');
-const quickReplies = document.getElementById('quick-replies');
-const countryInfoContent = document.getElementById('country-info-content');
-const topicInfoContent = document.getElementById('topic-info-content');
-const selectedCountryBadge = document.getElementById('selected-country-badge');
-const typingIndicator = document.getElementById('typing-indicator');
-const destinationItems = document.querySelectorAll('.destination-item');
-const quickButtons = document.querySelectorAll('.quick-btn');
-const leftToggle = document.getElementById('left-toggle');
-const rightToggle = document.getElementById('right-toggle');
-const mobileMenu = document.getElementById('mobile-menu');
-const mobileOverlay = document.getElementById('mobile-overlay');
-const emojiPicker = document.getElementById('emoji-picker');
-const emojiBtn = document.getElementById('emoji-btn');
-const closeEmoji = document.getElementById('close-emoji');
-const bookConsultationBtn = document.getElementById('book-consultation-btn');
+// Chatbot using Database
+document.addEventListener('DOMContentLoaded', function () {
+    // Database instance
+    const db = studyAbroadDB;
 
-// Knowledge Base
-const knowledgeBase = {
-    countries: {
-        canada: {
-            name: "Canada",
-            flag: "🇨🇦",
-            color: "#dc2626",
-            info: {
-                admissions: "2026 Intake: IELTS 6.5 overall (no band below 6.0) or PTE 58+. Deadlines: Jan-Mar 2026 for September intake. SDS Stream requires upfront tuition payment & GIC of CAD 20,635.",
-                scholarships: "Lester B. Pearson Scholarship (full tuition at UofT), Vanier Canada Graduate Scholarships (CAD 50,000/year), University Entrance Awards for 3.5+ GPA.",
-                visa: "Student Direct Stream (SDS): GIC CAD 20,635, medical exam, NOC from MoEST required. Processing: 20-45 days.",
-                noc: "NOC from MoEST mandatory for all Nepali students. Process: 7-10 working days, NPR 2,000 fee.",
-                deadlines: "Fall 2026: Most deadlines Jan-Mar 2026. Winter 2027: Aug-Oct 2026."
-            }
-        },
-        australia: {
-            name: "Australia",
-            flag: "🇦🇺",
-            color: "#1d4ed8",
-            info: {
-                admissions: "Genuine Student (GS) requirement crucial for 2026. IELTS 6.0 for UG, 6.5 for PG (no band below 5.5). Popular: IT at UTS, Nursing at UQ, Business at Monash.",
-                scholarships: "Australia Awards Scholarships, Destination Australia, University-specific scholarships for high achievers.",
-                visa: "Student Visa (Subclass 500): Bank balance NPR 45-55 Lakhs, Overseas Student Health Cover (OSHC) mandatory. Genuine Temporary Entrant (GTE) critical.",
-                noc: "NOC from MoEST required before visa application. Must show funds in A-class banks.",
-                deadlines: "Semester 1 2026: Oct-Dec 2025. Semester 2 2026: Apr-Jun 2026."
-            }
-        },
-        usa: {
-            name: "United States",
-            flag: "🇺🇸",
-            color: "#3b82f6",
-            info: {
-                admissions: "GRE/GMAT required for most graduate programs. TOEFL 80+ or IELTS 6.5+. Strong SOP and letters of recommendation important.",
-                scholarships: "Fulbright Program, University scholarships, Teaching/Research Assistantships for graduate students.",
-                visa: "F1 Student Visa: SEVIS fee, financial proof for 1+ year, interview at US Embassy.",
-                deadlines: "Fall 2026: Dec 2025 - Feb 2026. Spring 2027: Jul-Sep 2026."
-            }
-        },
-        uk: {
-            name: "United Kingdom",
-            flag: "🇬🇧",
-            color: "#ef4444",
-            info: {
-                admissions: "IELTS 6.0-7.0 depending on program. CAS (Confirmation of Acceptance for Studies) required for visa.",
-                scholarships: "Chevening Scholarships, Commonwealth Scholarships, University-specific awards.",
-                visa: "Student Visa: Financial proof for 1st year + 9 months living costs. Healthcare surcharge required.",
-                deadlines: "Fall 2026: Jan-Mar 2026 for most universities."
-            }
-        }
-    },
-    common: {
-        noc: "All Nepali students must obtain a No Objection Certificate (NOC) from the MoEST portal. Process takes 7-10 working days with NPR 2,000 fee.",
-        timeline: "Start applications 12-15 months before intake. Allow 2-3 months for visa processing.",
-        financial: "Show funds in A-class Nepali banks. For most countries: NPR 40-60 Lakhs for 1st year."
+    // DOM Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
+    const quickReplies = document.getElementById('quick-replies');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const destinationItems = document.querySelectorAll('.destination-item');
+    const quickButtons = document.querySelectorAll('.quick-btn');
+    const countryInfoContent = document.getElementById('country-info-content');
+    const selectedCountryBadge = document.getElementById('selected-country-badge');
+
+    // State
+    let currentCountry = null;
+    let conversationHistory = [];
+
+    // Initialize chat
+    function initChat() {
+        addBotMessage(`
+            Namaste! 👋 Welcome to your 2026 Study Abroad Assistant. 
+            I'm powered by a comprehensive database that gets updated regularly.
+            
+            You can ask me about:
+            • 🎓 Admission requirements for different countries
+            • 💰 Scholarships and financial aid
+            • 🛂 Visa documentation and NOC process
+            • 📅 2026 intake deadlines
+            • 🏫 University-specific information
+            
+            Where would you like to study?
+        `);
+
+        showQuickReplies([
+            "🇨🇦 Canada admission requirements",
+            "🇦🇺 Australia scholarships",
+            "💰 Financial documentation",
+            "📅 2026 deadlines",
+            "🛂 NOC process"
+        ]);
+
+        updateCountryList();
+        setupEventListeners();
     }
-};
 
-let currentCountry = null;
-let conversationHistory = [];
+    // Update country list from database
+    function updateCountryList() {
+        const countries = db.getCountries();
+        destinationItems.forEach(item => {
+            const countryId = item.getAttribute('data-country');
+            const country = countries[countryId];
 
-// Initialize
-function init() {
-    setupEventListeners();
-    showQuickReplies([
-        "🇨🇦 Canada admission requirements",
-        "🇦🇺 Australia scholarships",
-        "💰 Financial documentation",
-        "📅 2026 deadlines",
-        "🛂 NOC process"
-    ]);
-    
-    // Set default country to Canada
-    setActiveCountry('canada');
-}
+            if (country) {
+                item.querySelector('.flag').textContent = country.flag || '🌐';
+                item.querySelector('.dest-info strong').textContent = country.name;
 
-// Setup event listeners
-function setupEventListeners() {
-    // Send message on button click
-    sendBtn.addEventListener('click', sendMessage);
-    
-    // Send message on Enter key (but allow Shift+Enter for new line)
-    messageInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-    
-    // Show placeholder when input is empty
-    messageInput.addEventListener('input', () => {
-        const placeholder = document.getElementById('input-placeholder');
-        if (messageInput.textContent.trim() === '') {
-            placeholder.style.display = 'block';
-        } else {
-            placeholder.style.display = 'none';
-        }
-    });
-    
-    // Destination selection
-    destinationItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const country = item.getAttribute('data-country');
-            setActiveCountry(country);
-            addUserMessage(`Interested in ${knowledgeBase.countries[country].name}`);
-            simulateTyping(() => {
-                addBotMessage(`Great choice! ${knowledgeBase.countries[country].flag} ${knowledgeBase.countries[country].name} is a popular destination for Nepali students. What would you like to know about studying there?`);
-                showQuickReplies([
-                    "Admission requirements",
-                    "Scholarship opportunities",
-                    "Visa process",
-                    "Financial documentation",
-                    "Deadlines for 2026"
-                ]);
+                // Update quick info
+                if (country.topics?.admissions?.content) {
+                    const content = country.topics.admissions.content;
+                    const ieltsMatch = content.match(/IELTS[^<]*?(\d+\.?\d*)/);
+                    const deadlineMatch = content.match(/Deadline[^<]*?(Jan|Feb|Mar)/i);
+                    const info = [];
+                    if (ieltsMatch) info.push(`IELTS ${ieltsMatch[1]}`);
+                    if (deadlineMatch) info.push(`${deadlineMatch[1]} Deadline`);
+                    if (info.length > 0) {
+                        item.querySelector('.dest-info span').textContent = info.join(' | ');
+                    }
+                }
+
+                // Add click handler
+                item.addEventListener('click', () => handleCountrySelect(countryId));
+            }
+        });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Send message on button click
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Send message on Enter key
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Quick buttons
+        quickButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = e.target.id || e.target.closest('.quick-btn').id;
+                handleQuickAction(action);
             });
         });
-    });
-    
-    // Quick buttons
-    quickButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const action = e.target.id || e.target.closest('.quick-btn').id;
-            handleQuickAction(action);
+
+        // Show placeholder when input is empty
+        messageInput.addEventListener('input', () => {
+            const placeholder = document.getElementById('input-placeholder');
+            if (messageInput.textContent.trim() === '') {
+                placeholder.style.display = 'block';
+            } else {
+                placeholder.style.display = 'none';
+            }
         });
-    });
-    
-    // Sidebar toggles
-    leftToggle.addEventListener('click', () => toggleSidebar('left'));
-    rightToggle.addEventListener('click', () => toggleSidebar('right'));
-    mobileMenu.addEventListener('click', () => toggleSidebar('left'));
-    
-    // Mobile overlay
-    mobileOverlay.addEventListener('click', () => {
-        document.querySelectorAll('.sidebar').forEach(sidebar => {
-            sidebar.classList.remove('active');
+    }
+
+    // Send message
+    function sendMessage() {
+        const message = messageInput.textContent.trim();
+        if (message === '') return;
+
+        addUserMessage(message);
+        messageInput.textContent = '';
+        document.getElementById('input-placeholder').style.display = 'block';
+
+        // Process the message
+        processUserMessage(message);
+    }
+
+    // Handle country selection
+    function handleCountrySelect(countryId) {
+        const countries = db.getCountries();
+        const country = countries[countryId];
+
+        if (!country) return;
+
+        currentCountry = countryId;
+        setActiveCountry(countryId);
+        addUserMessage(`Interested in ${country.name}`);
+
+        simulateTyping(() => {
+            addBotMessage(`Great choice! ${country.flag} ${country.name} is a popular destination for Nepali students. What would you like to know about studying there?`);
+            showQuickReplies([
+                "Admission requirements",
+                "Scholarship opportunities",
+                "Visa process",
+                "Financial documentation",
+                "Deadlines for 2026"
+            ]);
+
+            // Update country info panel
+            updateCountryInfoPanel(country);
         });
-        mobileOverlay.classList.remove('active');
-    });
-    
-    // Emoji picker
-    emojiBtn.addEventListener('click', () => {
-        emojiPicker.style.display = 'block';
-    });
-    
-    closeEmoji.addEventListener('click', () => {
-        emojiPicker.style.display = 'none';
-    });
-    
-    // Emoji selection
-    document.querySelectorAll('.emoji-grid span').forEach(emoji => {
-        emoji.addEventListener('click', () => {
-            insertAtCaret(messageInput, emoji.textContent);
-            messageInput.focus();
+    }
+
+    // Process user message
+    function processUserMessage(message) {
+        const lowerMessage = message.toLowerCase();
+
+        simulateTyping(() => {
+            // First, try to find exact matches in database
+            const searchResults = db.searchAnswer(lowerMessage);
+
+            if (searchResults.length > 0) {
+                // Use the best match
+                const bestResult = searchResults[0];
+
+                if (bestResult.type === 'country_topic') {
+                    addBotMessage(`${bestResult.country}:<br><br>${bestResult.content}`);
+
+                    // Update country info if it's a country-specific topic
+                    const countries = db.getCountries();
+                    const country = Object.values(countries).find(c => c.name === bestResult.country);
+                    if (country) {
+                        setActiveCountry(country.id);
+                        updateCountryInfoPanel(country);
+                    }
+                } else if (bestResult.type === 'common') {
+                    addBotMessage(`${bestResult.topic}:<br><br>${bestResult.content}`);
+                } else if (bestResult.type === 'faq') {
+                    addBotMessage(`Q: ${bestResult.question}<br><br>A: ${bestResult.answer}`);
+                }
+
+                // Show follow-up options
+                setTimeout(() => {
+                    showQuickReplies([
+                        "Ask another question",
+                        "Explore other countries",
+                        "Book consultation"
+                    ]);
+                }, 500);
+
+                return;
+            }
+
+            // If no database match, use fallback responses
+            handleFallbackResponse(lowerMessage);
         });
-    });
-    
-    // Book consultation
-    bookConsultationBtn.addEventListener('click', bookConsultation);
-}
+    }
 
-// Send message function
-function sendMessage() {
-    const message = messageInput.textContent.trim();
-    if (message === '') return;
-    
-    addUserMessage(message);
-    messageInput.textContent = '';
-    document.getElementById('input-placeholder').style.display = 'block';
-    
-    // Process the message
-    processUserMessage(message);
-}
+    // Handle fallback responses when no database match
+    function handleFallbackResponse(message) {
+        const countries = db.getCountries();
 
-// Add user message to chat
-function addUserMessage(text) {
-    const messageWrapper = document.createElement('div');
-    messageWrapper.className = 'message-wrapper';
-    messageWrapper.innerHTML = `
-        <div class="message user" style="margin-left: auto;">
-            <div class="message-content" style="background: var(--message-bg-user); color: white; border-radius: var(--radius-lg) 0 var(--radius-lg) var(--radius-lg);">
-                <div class="message-sender">
-                    <strong>You</strong>
-                    <span class="message-time">${getCurrentTime()}</span>
-                </div>
-                <div class="message-text">
-                    ${text}
-                </div>
-                <div class="message-actions">
-                    <i class="fas fa-check-double seen"></i>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    chatMessages.appendChild(messageWrapper);
-    scrollToBottom();
-    
-    // Save to history
-    conversationHistory.push({
-        sender: 'user',
-        text,
-        time: new Date()
-    });
-}
-
-// Add bot message to chat
-function addBotMessage(text) {
-    const messageWrapper = document.createElement('div');
-    messageWrapper.className = 'message-wrapper';
-    messageWrapper.innerHTML = `
-        <div class="message bot">
-            <div class="message-content">
-                <div class="message-sender">
-                    <strong>GlobalEd Study Advisor</strong>
-                    <span class="message-time">${getCurrentTime()}</span>
-                </div>
-                <div class="message-text">
-                    ${text}
-                </div>
-                <div class="message-actions">
-                    <i class="fas fa-check-double"></i>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    chatMessages.appendChild(messageWrapper);
-    scrollToBottom();
-    
-    // Save to history
-    conversationHistory.push({
-        sender: 'bot',
-        text,
-        time: new Date()
-    });
-}
-
-// Process user message
-function processUserMessage(message) {
-    const lowerMessage = message.toLowerCase();
-    
-    simulateTyping(() => {
         // Check for country mentions
-        for (const [key, country] of Object.entries(knowledgeBase.countries)) {
-            if (lowerMessage.includes(country.name.toLowerCase()) || lowerMessage.includes(key)) {
-                setActiveCountry(key);
-                
+        for (const [countryId, country] of Object.entries(countries)) {
+            if (message.includes(country.name.toLowerCase()) || message.includes(countryId)) {
+                setActiveCountry(countryId);
+
                 // Check for topic keywords
-                if (lowerMessage.includes('admission') || lowerMessage.includes('requirement') || lowerMessage.includes('ielts')) {
-                    addBotMessage(`For ${country.name} admissions in 2026:<br><br>${country.info.admissions}`);
-                    updateTopicInfo('Admissions', country.info.admissions);
+                if (message.includes('admission') || message.includes('requirement') || message.includes('ielts')) {
+                    const topic = country.topics?.admissions;
+                    if (topic) {
+                        addBotMessage(`${topic.title}:<br><br>${topic.content}`);
+                    } else {
+                        addBotMessage(`Admission information for ${country.name} is being updated. Please check back soon or book a consultation for the latest details.`);
+                    }
                     return;
-                } else if (lowerMessage.includes('scholarship') || lowerMessage.includes('funding') || lowerMessage.includes('award')) {
-                    addBotMessage(`Scholarship opportunities for ${country.name}:<br><br>${country.info.scholarships}`);
-                    updateTopicInfo('Scholarships', country.info.scholarships);
+                } else if (message.includes('scholarship') || message.includes('funding')) {
+                    const topic = country.topics?.scholarships;
+                    if (topic) {
+                        addBotMessage(`${topic.title}:<br><br>${topic.content}`);
+                    } else {
+                        addBotMessage(`Scholarship information for ${country.name} is being updated. Please check back soon or book a consultation for the latest details.`);
+                    }
                     return;
-                } else if (lowerMessage.includes('visa') || lowerMessage.includes('document')) {
-                    addBotMessage(`${country.name} visa requirements:<br><br>${country.info.visa}<br><br><strong>For all Nepali students:</strong><br>${knowledgeBase.common.noc}`);
-                    updateTopicInfo('Visa Process', country.info.visa);
-                    return;
-                } else if (lowerMessage.includes('deadline') || lowerMessage.includes('date')) {
-                    addBotMessage(`${country.name} 2026 intake deadlines:<br><br>${country.info.deadlines}`);
-                    updateTopicInfo('Deadlines', country.info.deadlines);
+                } else if (message.includes('visa')) {
+                    const topic = country.topics?.visa;
+                    if (topic) {
+                        addBotMessage(`${topic.title}:<br><br>${topic.content}`);
+                    } else {
+                        addBotMessage(`Visa information for ${country.name} is being updated. Please check back soon or book a consultation for the latest details.`);
+                    }
                     return;
                 } else {
                     // General country info
-                    addBotMessage(`Here's what you need to know about studying in ${country.name}:<br><br>
-                    <strong>Admissions:</strong> ${country.info.admissions.substring(0, 100)}...<br><br>
-                    <strong>Scholarships:</strong> ${country.info.scholarships.substring(0, 100)}...<br><br>
-                    <strong>Visa:</strong> ${country.info.visa.substring(0, 100)}...<br><br>
+                    addBotMessage(`Here's what I know about ${country.name}:<br><br>
+                    ${country.description || 'Popular destination for Nepali students.'}<br><br>
                     What specific information would you like?`);
-                    
+
                     showQuickReplies([
                         "Admission requirements",
                         "Scholarship opportunities",
                         "Visa process",
-                        "Financial documentation",
-                        "Deadlines for 2026"
+                        "Financial documentation"
                     ]);
-                    
-                    updateCountryInfo(country);
+
+                    updateCountryInfoPanel(country);
                     return;
                 }
             }
         }
-        
+
         // Check for general topics
-        if (lowerMessage.includes('noc') || lowerMessage.includes('objection certificate')) {
-            addBotMessage(`No Objection Certificate (NOC) process:<br><br>${knowledgeBase.common.noc}<br><br>This is required for all Nepali students before applying for a student visa.`);
-            updateTopicInfo('NOC Process', knowledgeBase.common.noc);
-        } else if (lowerMessage.includes('financial') || lowerMessage.includes('bank') || lowerMessage.includes('fund')) {
-            addBotMessage(`Financial documentation requirements:<br><br>${knowledgeBase.common.financial}<br><br>Specific amounts vary by country. For example, Australia requires NPR 45-55 Lakhs in A-class banks.`);
-            updateTopicInfo('Financial Documentation', knowledgeBase.common.financial);
-        } else if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('namaste')) {
+        if (message.includes('noc') || message.includes('objection certificate')) {
+            const common = db.getDatabase()?.common?.noc;
+            if (common) {
+                addBotMessage(`${common.title}:<br><br>${common.content}`);
+            } else {
+                addBotMessage("The NOC (No Objection Certificate) is required for all Nepali students from MoEST. Process takes 7-10 working days with NPR 2,000 fee.");
+            }
+        } else if (message.includes('timeline') || message.includes('deadline') || message.includes('when to apply')) {
+            const common = db.getDatabase()?.common?.timeline;
+            if (common) {
+                addBotMessage(`${common.title}:<br><br>${common.content}`);
+            } else {
+                addBotMessage("Start applications 12-15 months before intake. Most deadlines are Jan-Mar 2026 for Fall 2026 intake.");
+            }
+        } else if (message.includes('hello') || message.includes('hi') || message.includes('namaste')) {
             addBotMessage(`Namaste! 👋 How can I help you with your 2026 study abroad plans today?`);
-        } else if (lowerMessage.includes('thank')) {
+        } else if (message.includes('thank')) {
             addBotMessage(`You're welcome! Is there anything else you'd like to know about studying abroad in 2026?`);
         } else {
-            addBotMessage(`I can help you with information about studying abroad in 2026. Try asking about specific countries like Canada, Australia, USA, or UK, or ask about admissions, scholarships, visas, or deadlines.`);
-            
+            addBotMessage(`I can help you with information about studying abroad in 2026. Try asking about specific countries or topics. You can also click on countries in the left sidebar.`);
+
             showQuickReplies([
                 "🇨🇦 Canada admission requirements",
                 "🇦🇺 Australia scholarships",
                 "💰 Financial documentation",
-                "📅 2026 deadlines",
-                "🛂 NOC process"
+                "📅 2026 deadlines"
             ]);
         }
-    });
-}
-
-// Show quick reply buttons
-function showQuickReplies(replies) {
-    quickReplies.innerHTML = '';
-    
-    replies.forEach(reply => {
-        const button = document.createElement('div');
-        button.className = 'quick-reply';
-        button.textContent = reply;
-        button.addEventListener('click', () => {
-            addUserMessage(reply);
-            processUserMessage(reply);
-        });
-        quickReplies.appendChild(button);
-    });
-}
-
-// Set active country
-function setActiveCountry(countryCode) {
-    currentCountry = countryCode;
-    const country = knowledgeBase.countries[countryCode];
-    
-    // Update UI
-    destinationItems.forEach(item => {
-        item.classList.remove('active');
-        if (item.getAttribute('data-country') === countryCode) {
-            item.classList.add('active');
-        }
-    });
-    
-    // Update country badge
-    selectedCountryBadge.textContent = country.name;
-    selectedCountryBadge.style.background = country.color;
-    
-    // Update country info panel
-    updateCountryInfo(country);
-}
-
-// Update country info in right sidebar
-function updateCountryInfo(country) {
-    countryInfoContent.innerHTML = `
-        <div class="country-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-            <div style="font-size: 32px;">${country.flag}</div>
-            <div>
-                <h3 style="margin: 0 0 4px 0;">${country.name}</h3>
-                <p style="font-size: 13px; color: var(--text-light); margin: 0;">2026 Study Destination</p>
-            </div>
-        </div>
-        <div style="margin-bottom: 16px;">
-            <h4 style="font-size: 14px; margin-bottom: 8px;">Key Requirements</h4>
-            <ul style="font-size: 13px; padding-left: 20px; color: var(--text-secondary); line-height: 1.5;">
-                <li>${country.name === 'Canada' ? 'IELTS 6.5 | SDS Stream' : country.name === 'Australia' ? 'IELTS 6.0 | GS Requirement' : country.name === 'USA' ? 'TOEFL 80+ | GRE/GMAT' : 'IELTS 6.0+ | CAS Required'}</li>
-                <li>${country.name === 'Canada' ? 'GIC: CAD 20,635' : country.name === 'Australia' ? 'Funds: NPR 45-55L' : 'Proof of funds for 1+ year'}</li>
-                <li>NOC from MoEST required</li>
-            </ul>
-        </div>
-        <div>
-            <h4 style="font-size: 14px; margin-bottom: 8px;">Popular Programs</h4>
-            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                <span style="background: ${country.color}15; color: ${country.color}; padding: 4px 10px; border-radius: 20px; font-size: 12px;">Business</span>
-                <span style="background: ${country.color}15; color: ${country.color}; padding: 4px 10px; border-radius: 20px; font-size: 12px;">Computer Science</span>
-                <span style="background: ${country.color}15; color: ${country.color}; padding: 4px 10px; border-radius: 20px; font-size: 12px;">Engineering</span>
-                <span style="background: ${country.color}15; color: ${country.color}; padding: 4px 10px; border-radius: 20px; font-size: 12px;">Healthcare</span>
-            </div>
-        </div>
-    `;
-}
-
-// Update topic info in right sidebar
-function updateTopicInfo(topic, content) {
-    topicInfoContent.innerHTML = `
-        <h4 style="margin-bottom: 12px;">${topic}</h4>
-        <div style="font-size: 13px; line-height: 1.5; color: var(--text-secondary);">
-            ${content.substring(0, 200)}${content.length > 200 ? '...' : ''}
-        </div>
-        ${content.length > 200 ? `<button style="margin-top: 12px; background: none; border: none; color: var(--primary-color); font-size: 13px; font-weight: 500; cursor: pointer;">Read More</button>` : ''}
-    `;
-}
-
-// Handle quick actions
-function handleQuickAction(action) {
-    switch(action) {
-        case 'noc-info':
-            addUserMessage("Tell me about the NOC process");
-            processUserMessage("NOC process");
-            break;
-        case 'deadline-check':
-            addUserMessage("What are the 2026 deadlines?");
-            processUserMessage("2026 deadlines");
-            break;
-        case 'scholarship-finder':
-            addUserMessage("Find scholarships for me");
-            processUserMessage("scholarships");
-            break;
-        case 'consultation-booking':
-            bookConsultation();
-            break;
     }
-}
 
-// Book consultation
-function bookConsultation() {
-    addUserMessage("Book a consultation");
-    addBotMessage(`I've noted your interest in a consultation! Our expert counselors will contact you within 24 hours. You can also visit our Kathmandu office:<br><br>
-    <strong>GlobalEd Connect Nepal</strong><br>
-    Durbar Marg, Kathmandu<br>
-    Phone: +977-1-4223456<br>
-    Email: nepal@globaledconnect.com<br><br>
-    Would you like me to help you with anything else while you wait?`);
-    
-    showQuickReplies([
-        "Yes, continue with my queries",
-        "No, thank you"
-    ]);
-}
+    // Handle quick actions
+    function handleQuickAction(action) {
+        switch (action) {
+            case 'noc-info':
+                addUserMessage("Tell me about the NOC process");
+                processUserMessage("NOC process");
+                break;
+            case 'deadline-check':
+                addUserMessage("What are the 2026 deadlines?");
+                processUserMessage("2026 deadlines");
+                break;
+            case 'scholarship-finder':
+                addUserMessage("Find scholarships for me");
+                processUserMessage("scholarships");
+                break;
+            case 'consultation-booking':
+                bookConsultation();
+                break;
+        }
+    }
 
-// Simulate typing indicator
-function simulateTyping(callback) {
-    typingIndicator.style.display = 'flex';
-    
-    setTimeout(() => {
-        typingIndicator.style.display = 'none';
-        callback();
-    }, 1000 + Math.random() * 1000);
-}
+    // Set active country
+    function setActiveCountry(countryId) {
+        const countries = db.getCountries();
+        const country = countries[countryId];
 
-// Helper functions
-function getCurrentTime() {
-    const now = new Date();
-    return now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-}
+        if (!country) return;
 
-function scrollToBottom() {
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+        currentCountry = countryId;
 
-function toggleSidebar(side) {
-    const sidebar = document.querySelector(`.${side}-sidebar`);
-    sidebar.classList.toggle('active');
-    mobileOverlay.classList.toggle('active');
-}
+        // Update UI
+        destinationItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('data-country') === countryId) {
+                item.classList.add('active');
+            }
+        });
 
-function insertAtCaret(element, text) {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    range.deleteContents();
-    const textNode = document.createTextNode(text);
-    range.insertNode(textNode);
-    range.setStartAfter(textNode);
-    range.setEndAfter(textNode);
-    selection.removeAllRanges();
-    selection.addRange(range);
-}
+        // Update country badge
+        selectedCountryBadge.textContent = country.name;
+        selectedCountryBadge.style.background = country.color;
+    }
 
-// Initialize the chat when page loads
-document.addEventListener('DOMContentLoaded', init);
+    // Update country info panel
+    function updateCountryInfoPanel(country) {
+        const topics = country.topics || {};
+        const topicsCount = Object.keys(topics).length;
+
+        countryInfoContent.innerHTML = `
+            <div class="country-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="font-size: 32px;">${country.flag || '🌐'}</div>
+                <div>
+                    <h3 style="margin: 0 0 4px 0; color: ${country.color};">${country.name}</h3>
+                    <p style="font-size: 13px; color: var(--text-light); margin: 0;">${country.description || 'Study destination'}</p>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <p style="font-size: 14px; line-height: 1.5; color: var(--text-secondary);">
+                    ${country.description || 'Information loaded from database.'}
+                </p>
+            </div>
+            
+            ${topicsCount > 0 ? `
+                <div style="margin-bottom: 16px;">
+                    <h4 style="font-size: 14px; margin-bottom: 8px; color: var(--dark);">Available Topics</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                        ${Object.keys(topics).map(topic =>
+            `<span style="background: ${country.color}15; color: ${country.color}; padding: 4px 10px; border-radius: 20px; font-size: 12px; cursor: pointer;" 
+                                  onclick="window.chatBotAskAboutTopic('${country.id}', '${topic}')">
+                                ${topic}
+                            </span>`
+        ).join('')}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <div>
+                <h4 style="font-size: 14px; margin-bottom: 8px; color: var(--dark);">Quick Stats</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                    <div style="background: #f3f4f6; padding: 8px; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 12px; color: #6b7280;">Topics</div>
+                        <div style="font-weight: 600; color: ${country.color};">${topicsCount}</div>
+                    </div>
+                    <div style="background: #f3f4f6; padding: 8px; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 12px; color: #6b7280;">Last Updated</div>
+                        <div style="font-size: 11px; font-weight: 500; color: #6b7280;">
+                            ${country.lastUpdated ? new Date(country.lastUpdated).toLocaleDateString() : 'N/A'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            ${country.active === false ? `
+                <div style="margin-top: 15px; padding: 10px; background: #fef2f2; border-radius: 6px; border-left: 3px solid #ef4444;">
+                    <p style="margin: 0; font-size: 12px; color: #991b1b;">
+                        <i class="fas fa-exclamation-triangle"></i> This country is currently marked as inactive in the database.
+                    </p>
+                </div>
+            ` : ''}
+        `;
+    }
+
+    // Book consultation
+    function bookConsultation() {
+        addUserMessage("Book a consultation");
+        addBotMessage(`I've noted your interest in a consultation! Our expert counselors will contact you within 24 hours. You can also visit our Kathmandu office:<br><br>
+        <strong>GlobalEd Connect Nepal</strong><br>
+        Durbar Marg, Kathmandu<br>
+        Phone: +977-1-4223456<br>
+        Email: nepal@globaledconnect.com<br><br>
+        Would you like me to help you with anything else while you wait?`);
+
+        showQuickReplies([
+            "Yes, continue with my queries",
+            "No, thank you"
+        ]);
+    }
+
+    // Show quick reply buttons
+    function showQuickReplies(replies) {
+        quickReplies.innerHTML = '';
+
+        replies.forEach(reply => {
+            const button = document.createElement('div');
+            button.className = 'quick-reply';
+            button.textContent = reply;
+            button.addEventListener('click', () => {
+                addUserMessage(reply);
+                processUserMessage(reply);
+            });
+            quickReplies.appendChild(button);
+        });
+    }
+
+    // Add user message to chat
+    function addUserMessage(text) {
+        const messageWrapper = document.createElement('div');
+        messageWrapper.className = 'message-wrapper';
+        messageWrapper.innerHTML = `
+            <div class="message user" style="margin-left: auto;">
+                <div class="message-content" style="background: var(--message-bg-user); color: white; border-radius: var(--radius-lg) 0 var(--radius-lg) var(--radius-lg);">
+                    <div class="message-sender">
+                        <strong>You</strong>
+                        <span class="message-time">${getCurrentTime()}</span>
+                    </div>
+                    <div class="message-text">
+                        ${text}
+                    </div>
+                    <div class="message-actions">
+                        <i class="fas fa-check-double seen"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        chatMessages.appendChild(messageWrapper);
+        scrollToBottom();
+
+        // Save to history
+        conversationHistory.push({
+            sender: 'user',
+            text,
+            time: new Date()
+        });
+    }
+
+    // Add bot message to chat
+    function addBotMessage(text) {
+        const messageWrapper = document.createElement('div');
+        messageWrapper.className = 'message-wrapper';
+        messageWrapper.innerHTML = `
+            <div class="message bot">
+                <div class="message-content">
+                    <div class="message-sender">
+                        <strong>Study Abroad Assistant</strong>
+                        <span class="message-time">${getCurrentTime()}</span>
+                    </div>
+                    <div class="message-text">
+                        ${text}
+                    </div>
+                    <div class="message-actions">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        chatMessages.appendChild(messageWrapper);
+        scrollToBottom();
+
+        // Save to history
+        conversationHistory.push({
+            sender: 'bot',
+            text,
+            time: new Date()
+        });
+    }
+
+    // Simulate typing
+    function simulateTyping(callback) {
+        typingIndicator.style.display = 'flex';
+
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+            callback();
+        }, 800 + Math.random() * 800);
+    }
+
+    // Helper functions
+    function getCurrentTime() {
+        const now = new Date();
+        return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Make function available globally for topic clicks
+    window.chatBotAskAboutTopic = function (countryId, topicId) {
+        const countries = db.getCountries();
+        const country = countries[countryId];
+        const topic = country?.topics?.[topicId];
+
+        if (topic) {
+            addUserMessage(`${country.name} - ${topic.title}`);
+            simulateTyping(() => {
+                addBotMessage(`${topic.title}:<br><br>${topic.content}`);
+                showQuickReplies([
+                    "Ask another question",
+                    "Explore other countries",
+                    "Book consultation"
+                ]);
+            });
+        }
+    };
+
+    // Initialize chat
+    initChat();
+});

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Abroad Database Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --border: #e5e7eb;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            color: var(--dark);
+            min-height: 100vh;
+        }
+        
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .admin-sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .admin-logo i {
+            font-size: 28px;
+            color: var(--primary);
+        }
+        
+        .admin-logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .admin-logo span {
+            color: var(--primary);
+        }
+        
+        .nav-section {
+            margin-bottom: 30px;
+        }
+        
+        .nav-section h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #6b7280;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            color: #4b5563;
+            text-decoration: none;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: #eff6ff;
+            color: var(--primary);
+        }
+        
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .db-stats {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 30px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        /* Main Content */
+        .admin-main {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .admin-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #e5e7eb;
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #0da271;
+        }
+        
+        /* Content Cards */
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 12px;
+            background: #f9fafb;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: #4b5563;
+        }
+        
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .action-btn.edit {
+            color: var(--primary);
+            background: #dbeafe;
+        }
+        
+        .action-btn.edit:hover {
+            background: #bfdbfe;
+        }
+        
+        .action-btn.delete {
+            color: var(--danger);
+            background: #fee2e2;
+        }
+        
+        .action-btn.delete:hover {
+            background: #fecaca;
+        }
+        
+        .action-btn.view {
+            color: var(--secondary);
+            background: #d1fae5;
+        }
+        
+        .action-btn.view:hover {
+            background: #a7f3d0;
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            color: var(--primary);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        /* Status badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        /* Search box */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 12px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-sidebar {
+                width: 200px;
+            }
+            
+            .admin-main {
+                margin-left: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 15px;
+            }
+            
+            .admin-main {
+                margin-left: 0;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="admin-logo">
+                <i class="fas fa-database"></i>
+                <h1>Study<span>DB</span></h1>
+            </div>
+            
+            <div class="nav-section">
+                <h3>Manage Content</h3>
+                <a href="#" class="nav-link active" data-tab="countries">
+                    <i class="fas fa-globe-americas"></i>
+                    Countries
+                </a>
+                <a href="#" class="nav-link" data-tab="topics">
+                    <i class="fas fa-book-open"></i>
+                    Topics
+                </a>
+                <a href="#" class="nav-link" data-tab="faqs">
+                    <i class="fas fa-question-circle"></i>
+                    FAQs
+                </a>
+                <a href="#" class="nav-link" data-tab="universities">
+                    <i class="fas fa-university"></i>
+                    Universities
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <h3>Database Tools</h3>
+                <a href="#" class="nav-link" data-tab="import-export">
+                    <i class="fas fa-file-export"></i>
+                    Import/Export
+                </a>
+                <a href="#" class="nav-link" data-tab="backup">
+                    <i class="fas fa-save"></i>
+                    Backup
+                </a>
+                <a href="#" class="nav-link" data-tab="search">
+                    <i class="fas fa-search"></i>
+                    Search Test
+                </a>
+            </div>
+            
+            <div class="db-stats">
+                <div class="stat-item">
+                    <span>Countries</span>
+                    <span class="stat-value" id="stat-countries">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>FAQs</span>
+                    <span class="stat-value" id="stat-faqs">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Last Updated</span>
+                    <span class="stat-value" id="stat-last-updated">-</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <a href="index.html" class="btn btn-secondary" style="width: 100%;">
+                    <i class="fas fa-arrow-left"></i> Back to Chat
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="admin-main">
+            <div class="admin-header">
+                <h2 id="page-title">Manage Countries</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="refresh-btn">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                    <button class="btn btn-primary" id="add-country-btn">
+                        <i class="fas fa-plus"></i> Add Country
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Countries Tab -->
+            <div id="countries-tab" class="tab-content active">
+                <div class="content-card">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-countries" placeholder="Search countries...">
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Country</th>
+                                    <th>Topics</th>
+                                    <th>Status</th>
+                                    <th>Last Updated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="countries-table-body">
+                                <!-- Countries will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Topics Tab -->
+            <div id="topics-tab" class="tab-content">
+                <div class="content-card">
+                    <div class="tabs" id="country-topic-tabs">
+                        <!-- Country tabs will be generated here -->
+                    </div>
+                    
+                    <div id="topics-content">
+                        <!-- Topics will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQs Tab -->
+            <div id="faqs-tab" class="tab-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>Frequently Asked Questions</h3>
+                        <button class="btn btn-primary" id="add-faq-btn">
+                            <i class="fas fa-plus"></i> Add FAQ
+                        </button>
+                    </div>
+                    
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-faqs" placeholder="Search FAQs...">
+                    </div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Category</th>
+                                <th>Views</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="faqs-table-body">
+                            <!-- FAQs will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Import/Export Tab -->
+            <div id="import-export-tab" class="tab-content">
+                <div class="content-card">
+                    <h3 style="margin-bottom: 20px;">Database Management</h3>
+                    
+                    <div class="form-row" style="margin-bottom: 30px;">
+                        <div class="form-col">
+                            <div class="content-card" style="background: #f0f9ff;">
+                                <h4 style="margin-bottom: 15px;"><i class="fas fa-file-export"></i> Export Database</h4>
+                                <p style="margin-bottom: 20px; color: #4b5563;">Download the entire database as a JSON file for backup or migration.</p>
+                                <button class="btn btn-primary" id="export-btn">
+                                    <i class="fas fa-download"></i> Export JSON
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="content-card" style="background: #f0fdf4;">
+                                <h4 style="margin-bottom: 15px;"><i class="fas fa-file-import"></i> Import Database</h4>
+                                <p style="margin-bottom: 20px; color: #4b5563;">Upload a JSON file to replace the current database.</p>
+                                <input type="file" id="import-file" accept=".json" style="margin-bottom: 15px;">
+                                <button class="btn btn-success" id="import-btn">
+                                    <i class="fas fa-upload"></i> Import JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="content-card" style="background: #fef2f2;">
+                        <h4 style="margin-bottom: 15px; color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                        <p style="margin-bottom: 20px; color: #4b5563;">Reset the database to default values. This action cannot be undone.</p>
+                        <button class="btn btn-danger" id="reset-btn">
+                            <i class="fas fa-trash"></i> Reset to Default
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search Test Tab -->
+            <div id="search-tab" class="tab-content">
+                <div class="content-card">
+                    <h3 style="margin-bottom: 20px;">Test Chatbot Search</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Enter a question to test the chatbot search:</label>
+                        <input type="text" id="test-search-query" class="form-control" placeholder="e.g., What is the IELTS requirement for Canada?">
+                    </div>
+                    
+                    <button class="btn btn-primary" id="test-search-btn">
+                        <i class="fas fa-search"></i> Test Search
+                    </button>
+                    
+                    <div id="search-results" style="margin-top: 30px; display: none;">
+                        <h4 style="margin-bottom: 15px;">Search Results:</h4>
+                        <div id="search-results-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Country Modal -->
+    <div class="modal" id="country-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-country-title">Add New Country</h3>
+                <button class="close-modal" id="close-country-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="country-form">
+                    <input type="hidden" id="country-id">
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Country Name *</label>
+                                <input type="text" id="country-name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Country Code *</label>
+                                <input type="text" id="country-code" class="form-control" placeholder="e.g., canada" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Flag Emoji</label>
+                                <input type="text" id="country-flag" class="form-control" placeholder="🇨🇦">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Color Code</label>
+                                <input type="color" id="country-color" class="form-control" value="#3b82f6">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea id="country-description" class="form-control"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="country-active" checked> Active (visible in chatbot)
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-country">Cancel</button>
+                <button class="btn btn-primary" id="save-country">Save Country</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Topic Modal -->
+    <div class="modal" id="topic-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-topic-title">Add/Edit Topic</h3>
+                <button class="close-modal" id="close-topic-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="topic-form">
+                    <input type="hidden" id="topic-country-id">
+                    <input type="hidden" id="topic-id">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Topic Title *</label>
+                        <input type="text" id="topic-title" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Content *</label>
+                        <textarea id="topic-content" class="form-control" rows="8" required></textarea>
+                        <small>Use HTML tags like &lt;br&gt; for line breaks and &lt;strong&gt; for bold text</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Keywords (comma separated)</label>
+                        <input type="text" id="topic-keywords" class="form-control" placeholder="ielts, deadline, requirements">
+                        <small>These help the chatbot find this topic when users ask questions</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select id="topic-priority" class="form-control">
+                            <option value="1">High</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Low</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-topic">Cancel</button>
+                <button class="btn btn-primary" id="save-topic">Save Topic</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Modal -->
+    <div class="modal" id="faq-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-faq-title">Add/Edit FAQ</h3>
+                <button class="close-modal" id="close-faq-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="faq-form">
+                    <input type="hidden" id="faq-id">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Question *</label>
+                        <input type="text" id="faq-question" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Answer *</label>
+                        <textarea id="faq-answer" class="form-control" rows="6" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <select id="faq-category" class="form-control">
+                                    <option value="general">General</option>
+                                    <option value="admissions">Admissions</option>
+                                    <option value="visa">Visa</option>
+                                    <option value="financial">Financial</option>
+                                    <option value="language">Language Tests</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-faq">Cancel</button>
+                <button class="btn btn-primary" id="save-faq">Save FAQ</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include database and admin scripts -->
+    <script src="database.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>

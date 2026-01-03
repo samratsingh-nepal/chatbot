@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="messenger-container">
         <!-- Left Sidebar - User/Contacts -->
         <div class="sidebar left-sidebar">
             <div class="user-profile">
                 <div class="avatar">
-                    <img src="https://ui-avatars.com/api/?name=Study+Abroad&background=004a99&color=fff&size=120" alt="Study Abroad Assistant">
+                    <img src="https://ui-avatars.com/api/?name=Study+Abroad&background=004a99&color=fff&size=120"
+                        alt="Study Abroad Assistant">
                 </div>
                 <div class="user-info">
                     <h3>Study Abroad Assistant</h3>
@@ -24,12 +27,12 @@
                     <i class="fas fa-chevron-left"></i>
                 </div>
             </div>
-            
+
             <div class="search-bar">
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Search destinations or topics...">
             </div>
-            
+
             <div class="sidebar-section">
                 <h4><i class="fas fa-globe-americas"></i> Top Destinations 2026</h4>
                 <div class="destination-list">
@@ -71,7 +74,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="sidebar-section">
                 <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
                 <div class="quick-actions">
@@ -89,7 +92,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <div class="user-status">
                 <div class="status-item">
                     <div class="status-icon success">
@@ -111,7 +114,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Main Chat Area -->
         <div class="chat-area">
             <!-- Chat Header -->
@@ -122,7 +125,8 @@
                     </div>
                     <div class="chat-partner">
                         <div class="partner-avatar">
-                            <img src="https://ui-avatars.com/api/?name=GlobalEd&background=10b981&color=fff&size=80" alt="GlobalEd">
+                            <img src="https://ui-avatars.com/api/?name=GlobalEd&background=10b981&color=fff&size=80"
+                                alt="GlobalEd">
                         </div>
                         <div class="partner-info">
                             <h2>GlobalEd Study Advisor</h2>
@@ -149,14 +153,14 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Chat Messages Container -->
             <div class="chat-messages" id="chat-messages">
                 <!-- Date Separator -->
                 <div class="date-separator">
                     <span>Today, November 15, 2026</span>
                 </div>
-                
+
                 <!-- Welcome Message -->
                 <div class="message-wrapper">
                     <div class="message bot">
@@ -166,7 +170,8 @@
                                 <span class="message-time">10:00 AM</span>
                             </div>
                             <div class="message-text">
-                                <p>Namaste! 👋 Welcome to your 2026 Study Abroad Assistant. I'm here to help you navigate admissions, scholarships, and visa processes for studying abroad.</p>
+                                <p>Namaste! 👋 Welcome to your 2026 Study Abroad Assistant. I'm here to help you
+                                    navigate admissions, scholarships, and visa processes for studying abroad.</p>
                                 <p>You can ask me about:</p>
                                 <ul>
                                     <li>🎓 Admission requirements for different countries</li>
@@ -182,13 +187,13 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Quick Reply Options (will be populated by JS) -->
                 <div class="quick-reply-container" id="quick-replies">
                     <!-- Quick replies will appear here -->
                 </div>
             </div>
-            
+
             <!-- Chat Input Area -->
             <div class="chat-input">
                 <div class="input-tools">
@@ -220,7 +225,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Right Sidebar - Information Panel -->
         <div class="sidebar right-sidebar">
             <div class="sidebar-header">
@@ -229,7 +234,7 @@
                     <i class="fas fa-chevron-right"></i>
                 </div>
             </div>
-            
+
             <!-- Active Country Info -->
             <div class="info-section active" id="country-info-section">
                 <div class="info-header">
@@ -240,7 +245,7 @@
                     <p>Select a country from the left sidebar or chat to see detailed information here.</p>
                 </div>
             </div>
-            
+
             <!-- Topic Details -->
             <div class="info-section" id="topic-info-section">
                 <div class="info-header">
@@ -250,7 +255,7 @@
                     <p>Choose a topic to explore requirements, deadlines, and processes.</p>
                 </div>
             </div>
-            
+
             <!-- Important Updates -->
             <div class="info-section updates">
                 <div class="info-header">
@@ -290,7 +295,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Resources & Downloads -->
             <div class="info-section resources">
                 <div class="info-header">
@@ -335,7 +340,7 @@
                     </a>
                 </div>
             </div>
-            
+
             <!-- Contact Information -->
             <div class="info-section contact">
                 <div class="info-header">
@@ -363,7 +368,377 @@
                 </div>
             </div>
         </div>
-        
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Abroad Chat - 2026 Nepal Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="messenger-container">
+        <!-- Left Sidebar - User/Contacts -->
+        <div class="sidebar left-sidebar">
+            <div class="user-profile">
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=Study+Abroad&background=004a99&color=fff&size=120"
+                        alt="Study Abroad Assistant">
+                </div>
+                <div class="user-info">
+                    <h3>Study Abroad Assistant</h3>
+                    <p class="status online"><i class="fas fa-circle"></i> Online</p>
+                </div>
+                <div class="sidebar-toggle" id="left-toggle">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search destinations or topics...">
+            </div>
+
+            <div class="sidebar-section">
+                <h4><i class="fas fa-globe-americas"></i> Top Destinations 2026</h4>
+                <div class="destination-list">
+                    <div class="destination-item active" data-country="canada">
+                        <div class="flag">🇨🇦</div>
+                        <div class="dest-info">
+                            <strong>Canada</strong>
+                            <span>IELTS 6.5 | SDS Stream</span>
+                        </div>
+                        <div class="unread-indicator"></div>
+                    </div>
+                    <div class="destination-item" data-country="australia">
+                        <div class="flag">🇦🇺</div>
+                        <div class="dest-info">
+                            <strong>Australia</strong>
+                            <span>GS Requirement | NPR 45L+</span>
+                        </div>
+                    </div>
+                    <div class="destination-item" data-country="usa">
+                        <div class="flag">🇺🇸</div>
+                        <div class="dest-info">
+                            <strong>USA</strong>
+                            <span>GRE/GMAT | F1 Visa</span>
+                        </div>
+                    </div>
+                    <div class="destination-item" data-country="uk">
+                        <div class="flag">🇬🇧</div>
+                        <div class="dest-info">
+                            <strong>UK</strong>
+                            <span>IELTS 6.0 | CAS Required</span>
+                        </div>
+                    </div>
+                    <div class="destination-item" data-country="germany">
+                        <div class="flag">🇩🇪</div>
+                        <div class="dest-info">
+                            <strong>Germany</strong>
+                            <span>Free Tuition | IELTS 6.5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
+                <div class="quick-actions">
+                    <button class="quick-btn" id="noc-info">
+                        <i class="fas fa-file-certificate"></i> NOC Process
+                    </button>
+                    <button class="quick-btn" id="deadline-check">
+                        <i class="fas fa-calendar-alt"></i> 2026 Deadlines
+                    </button>
+                    <button class="quick-btn" id="scholarship-finder">
+                        <i class="fas fa-award"></i> Scholarships
+                    </button>
+                    <button class="quick-btn" id="consultation-booking">
+                        <i class="fas fa-headset"></i> Book Consultation
+                    </button>
+                </div>
+            </div>
+
+            <div class="user-status">
+                <div class="status-item">
+                    <div class="status-icon success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="status-details">
+                        <span>Success Rate</span>
+                        <strong>94%</strong>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="status-details">
+                        <span>Avg. Processing</span>
+                        <strong>4-6 weeks</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-area">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="header-left">
+                    <div class="mobile-menu" id="mobile-menu">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <div class="chat-partner">
+                        <div class="partner-avatar">
+                            <img src="https://ui-avatars.com/api/?name=GlobalEd&background=10b981&color=fff&size=80"
+                                alt="GlobalEd">
+                        </div>
+                        <div class="partner-info">
+                            <h2>GlobalEd Study Advisor</h2>
+                            <p class="typing-indicator" id="typing-indicator">
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span>typing...</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="call-btn" title="Voice Call">
+                        <i class="fas fa-phone-alt"></i>
+                    </button>
+                    <button class="header-btn" id="video-btn" title="Video Call">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="header-btn" id="more-btn" title="More Options">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages Container -->
+            <div class="chat-messages" id="chat-messages">
+                <!-- Date Separator -->
+                <div class="date-separator">
+                    <span>Today, November 15, 2026</span>
+                </div>
+
+                <!-- Welcome Message -->
+                <div class="message-wrapper">
+                    <div class="message bot">
+                        <div class="message-content">
+                            <div class="message-sender">
+                                <strong>GlobalEd Study Advisor</strong>
+                                <span class="message-time">10:00 AM</span>
+                            </div>
+                            <div class="message-text">
+                                <p>Namaste! 👋 Welcome to your 2026 Study Abroad Assistant. I'm here to help you
+                                    navigate admissions, scholarships, and visa processes for studying abroad.</p>
+                                <p>You can ask me about:</p>
+                                <ul>
+                                    <li>🎓 Admission requirements for different countries</li>
+                                    <li>💰 Scholarships and financial aid</li>
+                                    <li>🛂 Visa documentation and NOC process</li>
+                                    <li>📅 2026 intake deadlines</li>
+                                </ul>
+                                <p>Where would you like to study?</p>
+                            </div>
+                            <div class="message-actions">
+                                <i class="fas fa-check-double seen"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Reply Options (will be populated by JS) -->
+                <div class="quick-reply-container" id="quick-replies">
+                    <!-- Quick replies will appear here -->
+                </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="chat-input">
+                <div class="input-tools">
+                    <button class="tool-btn" id="attach-btn" title="Attach File">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <button class="tool-btn" id="emoji-btn" title="Emoji">
+                        <i class="far fa-smile"></i>
+                    </button>
+                    <button class="tool-btn" id="template-btn" title="Quick Templates">
+                        <i class="fas fa-bolt"></i>
+                    </button>
+                </div>
+                <div class="input-wrapper">
+                    <div class="input-main">
+                        <div id="input-placeholder" class="input-placeholder">
+                            <span>Message GlobalEd Study Advisor...</span>
+                        </div>
+                        <div class="input-field" id="message-input" contenteditable="true"></div>
+                    </div>
+                    <button class="send-btn" id="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <div class="input-hints">
+                        <span>Try: "Canada admission requirements" or "Australia scholarships"</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Information Panel -->
+        <div class="sidebar right-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-info-circle"></i> Information Panel</h3>
+                <div class="sidebar-toggle" id="right-toggle">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <!-- Active Country Info -->
+            <div class="info-section active" id="country-info-section">
+                <div class="info-header">
+                    <h4><i class="fas fa-map-marker-alt"></i> Selected Country</h4>
+                    <div class="info-badge" id="selected-country-badge">None</div>
+                </div>
+                <div class="info-content" id="country-info-content">
+                    <p>Select a country from the left sidebar or chat to see detailed information here.</p>
+                </div>
+            </div>
+
+            <!-- Topic Details -->
+            <div class="info-section" id="topic-info-section">
+                <div class="info-header">
+                    <h4><i class="fas fa-book-open"></i> Topic Details</h4>
+                </div>
+                <div class="info-content" id="topic-info-content">
+                    <p>Choose a topic to explore requirements, deadlines, and processes.</p>
+                </div>
+            </div>
+
+            <!-- Important Updates -->
+            <div class="info-section updates">
+                <div class="info-header">
+                    <h4><i class="fas fa-bullhorn"></i> 2026 Updates</h4>
+                    <span class="update-badge">3 New</span>
+                </div>
+                <div class="updates-list">
+                    <div class="update-item new">
+                        <div class="update-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="update-content">
+                            <strong>Australia GS Requirement</strong>
+                            <p>New Genuine Student (GS) criteria effective Jan 2026.</p>
+                            <span class="update-time">2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="update-item new">
+                        <div class="update-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="update-content">
+                            <strong>Canada Fall 2026 Deadlines</strong>
+                            <p>Most universities: Feb-Mar 2026 for Sept intake.</p>
+                            <span class="update-time">1 day ago</span>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <div class="update-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="update-content">
+                            <strong>MoEST NOC Portal</strong>
+                            <p>Online NOC processing now live (NPR 2,000 fee).</p>
+                            <span class="update-time">1 week ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources & Downloads -->
+            <div class="info-section resources">
+                <div class="info-header">
+                    <h4><i class="fas fa-download"></i> Resources</h4>
+                </div>
+                <div class="resources-list">
+                    <a href="#" class="resource-item">
+                        <div class="resource-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="resource-info">
+                            <strong>2026 Intake Checklist</strong>
+                            <span>PDF • 1.2 MB</span>
+                        </div>
+                        <div class="resource-action">
+                            <i class="fas fa-download"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="resource-item">
+                        <div class="resource-icon">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <div class="resource-info">
+                            <strong>Scholarship Tracker</strong>
+                            <span>Excel • 850 KB</span>
+                        </div>
+                        <div class="resource-action">
+                            <i class="fas fa-download"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="resource-item">
+                        <div class="resource-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="resource-info">
+                            <strong>MoEST NOC Portal Link</strong>
+                            <span>Direct access to application</span>
+                        </div>
+                        <div class="resource-action">
+                            <i class="fas fa-external-link-alt"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="info-section contact">
+                <div class="info-header">
+                    <h4><i class="fas fa-headset"></i> Need Help?</h4>
+                </div>
+                <div class="contact-info">
+                    <p>Our expert counselors are available:</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Mon-Sat: 9 AM - 6 PM</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+977-1-4223456</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Durbar Marg, Kathmandu</span>
+                        </div>
+                    </div>
+                    <button class="contact-action-btn" id="book-consultation-btn">
+                        <i class="fas fa-calendar-alt"></i> Book Free Consultation
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Mobile Sidebar Overlay -->
         <div class="mobile-overlay" id="mobile-overlay"></div>
     </div>
@@ -385,4 +760,28 @@
 
     <script src="script.js"></script>
 </body>
+
+</html>
+        <!-- Mobile Sidebar Overlay -->
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+    </div>
+
+    <!-- Emoji Picker (Hidden by default) -->
+    <div class="emoji-picker" id="emoji-picker">
+        <div class="emoji-header">
+            <h4>Emojis</h4>
+            <button class="close-emoji" id="close-emoji">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="emoji-grid">
+            <span>😊</span><span>👍</span><span>🎓</span><span>💰</span><span>✈️</span>
+            <span>🇨🇦</span><span>🇦🇺</span><span>🇺🇸</span><span>🇬🇧</span><span>🇩🇪</span>
+            <span>📅</span><span>📝</span><span>✅</span><span>❗</span><span>💡</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
 </html>
