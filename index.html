@@ -3,22 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nepal Study Abroad Guide 2026</title>
+    <title>GlobalEd Connect - Nepal Study Abroad Advisor 2026</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="chat-container">
-        <header>
-            <h2>Study Abroad Assistant (Nepal)</h2>
-            <p>2026 Intake Guide</p>
-        </header>
-        <div id="chat-box" class="chat-box">
-            <div class="message bot">Namaste! Choose your preferred study destination to begin.</div>
-        </div>
-        <div id="options-container" class="options-container">
-            <!-- Buttons will be injected here by JavaScript -->
+    <div class="main-container">
+        <!-- Sidebar for info/quick links -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>GlobalEd<span>Connect</span></h2>
+                </div>
+                <p class="subtitle">Nepal's Premier Study Abroad Advisor</p>
+            </div>
+            
+            <div class="info-panel">
+                <h3><i class="fas fa-bullhorn"></i> 2026 Updates</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> MoEST NOC Portal Live</li>
+                    <li><i class="fas fa-check-circle"></i> New GS Requirement for Australia</li>
+                    <li><i class="fas fa-check-circle"></i> Canada SDS Stream Updated</li>
+                    <li><i class="fas fa-check-circle"></i> UK Graduate Route Extended</li>
+                </ul>
+                
+                <div class="quick-stats">
+                    <h4><i class="fas fa-chart-line"></i> Quick Stats</h4>
+                    <div class="stat">
+                        <span>Success Rate</span>
+                        <span class="value">94%</span>
+                    </div>
+                    <div class="stat">
+                        <span>Avg. Processing</span>
+                        <span class="value">4-6 weeks</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-widget">
+                <p><i class="fas fa-headset"></i> Need human assistance?</p>
+                <button class="contact-btn">
+                    <i class="fas fa-calendar-alt"></i> Book Consultation
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Interface -->
+        <div class="chat-interface">
+            <!-- Header -->
+            <header class="chat-header">
+                <div class="header-content">
+                    <div class="header-left">
+                        <div class="avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="header-text">
+                            <h1>Study Abroad Assistant</h1>
+                            <p class="status"><span class="status-indicator"></span> Online • 2026 Intake Specialist</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="icon-btn" title="Export Chat">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="icon-btn" title="Clear Chat" id="clear-chat">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">Step <span id="current-step">1</span> of 3</div>
+                </div>
+            </header>
+
+            <!-- Chat Messages Area -->
+            <div class="chat-wrapper">
+                <div class="welcome-banner">
+                    <div class="welcome-content">
+                        <h3><i class="fas fa-hands-helping"></i> Namaste! Welcome to GlobalEd Connect</h3>
+                        <p>I'm your AI advisor for 2026 intakes. Let's find the best study destination for you!</p>
+                    </div>
+                </div>
+
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Messages will be inserted here -->
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions" id="quick-actions">
+                    <h4><i class="fas fa-bolt"></i> Quick Select</h4>
+                    <div class="action-buttons">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Options Area -->
+            <div class="interaction-area">
+                <div class="input-container">
+                    <div class="options-grid" id="options-container">
+                        <!-- Dynamic buttons will appear here -->
+                    </div>
+                    
+                    <div class="navigation-controls">
+                        <button class="nav-btn" id="prev-btn" disabled>
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <div class="chat-history">
+                            <button class="icon-btn small" id="history-btn" title="Chat History">
+                                <i class="fas fa-history"></i>
+                            </button>
+                        </div>
+                        <button class="nav-btn primary" id="next-btn" disabled>
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="disclaimer">
+                    <p><i class="fas fa-info-circle"></i> Information is for 2026 intakes and subject to change. Verify with official sources.</p>
+                </div>
+            </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
