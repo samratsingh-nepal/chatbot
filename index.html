@@ -15,10 +15,10 @@
   <div class="welcome-screen" id="welcomeScreen">
     <div class="welcome-content">
       <div class="welcome-icon">
-        <i class="fas fa-graduation-cap"></i>
+        <i class="fas fa-comments"></i>
       </div>
       <h1>Study Abroad Chat Assistant</h1>
-      <p class="welcome-subtitle">Personalized guidance through simple button choices. No typing required!</p>
+      <p class="welcome-subtitle">Get personalized guidance through simple button choices</p>
 
       <div class="welcome-stats">
         <div class="stat">
@@ -35,15 +35,27 @@
         </div>
       </div>
 
+      <div class="welcome-features">
+        <div class="feature">
+          <i class="fas fa-check-circle"></i>
+          <span>No typing required</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-check-circle"></i>
+          <span>Button-only interaction</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-check-circle"></i>
+          <span>Personalized responses</span>
+        </div>
+      </div>
+
       <button class="start-chat-btn" onclick="startChat()">
-        <i class="fas fa-rocket"></i>
+        <i class="fas fa-play-circle"></i>
         Start Guided Chat
       </button>
 
-      <div class="welcome-footer">
-        <p><i class="fas fa-shield-alt"></i> Your data is private & secure</p>
-        <p class="welcome-note">Session automatically saved in your browser</p>
-      </div>
+      <p class="welcome-note">Your answers are saved for this session only</p>
     </div>
   </div>
 
@@ -68,8 +80,11 @@
         <button class="header-btn" onclick="showProfileSummary()" title="View profile">
           <i class="fas fa-user-circle"></i>
         </button>
-        <button class="header-btn restart-btn" onclick="resetChat()" title="Restart chat">
+        <button class="header-btn" onclick="resetChat()" title="Restart chat">
           <i class="fas fa-sync-alt"></i>
+        </button>
+        <button class="header-btn" onclick="showHelp()" title="Help">
+          <i class="fas fa-question-circle"></i>
         </button>
       </div>
     </div>
@@ -79,9 +94,9 @@
       <!-- Messages will be inserted here -->
     </div>
 
-    <!-- Action Buttons Container -->
-    <div class="action-buttons-container" id="actionButtonsContainer">
-      <!-- Action buttons will be inserted here -->
+    <!-- Action Buttons Area -->
+    <div class="action-buttons" id="actionButtons">
+      <!-- Action buttons will appear here -->
     </div>
 
     <!-- Progress Bar -->
@@ -151,6 +166,56 @@
       </div>
     </div>
   </div>
+
+  <!-- Help Modal -->
+  <div class="modal" id="helpModal">
+    <div class="modal-content help-modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-question-circle"></i> How to Use</h3>
+        <button class="modal-close" onclick="closeHelp()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Answer Profile Questions</h4>
+            <p>Click buttons to answer 6 quick questions about your study plans.</p>
+          </div>
+        </div>
+        <div class="help-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Choose Topics</h4>
+            <p>Select what you want to learn about from the menu options.</p>
+          </div>
+        </div>
+        <div class="help-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Get Personalized Advice</h4>
+            <p>Receive guidance tailored to your specific profile and situation.</p>
+          </div>
+        </div>
+        <div class="help-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>Connect with Counselors</h4>
+            <p>Get free consultation with study abroad experts when needed.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeHelp()">
+          Got it, let's start!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio for notifications -->
+  <audio id="notificationSound" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+  </audio>
 
   <script src="script.js"></script>
 </body>
