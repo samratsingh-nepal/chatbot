@@ -7,7 +7,6 @@
   <title>Study Abroad Chat Assistant</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
 </head>
 
 <body class="chatbot-interface">
@@ -23,41 +22,22 @@
 
       <div class="welcome-stats">
         <div class="stat">
-          <div class="stat-number">4,608</div>
-          <div class="stat-label">Profile Combinations</div>
+          <div class="stat-number">6</div>
+          <div class="stat-label">Quick Questions</div>
         </div>
         <div class="stat">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Personalized</div>
+          <div class="stat-number">5</div>
+          <div class="stat-label">Expert Topics</div>
         </div>
         <div class="stat">
-          <div class="stat-number">Free</div>
-          <div class="stat-label">No Cost</div>
-        </div>
-      </div>
-
-      <div class="welcome-features">
-        <div class="feature">
-          <i class="fas fa-bolt"></i>
-          <span>Quick 6-step profile setup</span>
-        </div>
-        <div class="feature">
-          <i class="fas fa-globe"></i>
-          <span>Covers 5 major study destinations</span>
-        </div>
-        <div class="feature">
-          <i class="fas fa-hand-pointer"></i>
-          <span>Button-only interaction</span>
-        </div>
-        <div class="feature">
-          <i class="fas fa-user-graduate"></i>
-          <span>Expert-level personalized advice</span>
+          <div class="stat-number">2-3</div>
+          <div class="stat-label">Minutes</div>
         </div>
       </div>
 
       <button class="start-chat-btn" onclick="startChat()">
         <i class="fas fa-rocket"></i>
-        Launch Chat Assistant
+        Start Guided Chat
       </button>
 
       <div class="welcome-footer">
@@ -85,17 +65,11 @@
       </div>
 
       <div class="header-right">
-        <button class="header-btn" onclick="toggleMute()" title="Toggle sound" id="muteBtn">
-          <i class="fas fa-volume-up"></i>
-        </button>
-        <button class="header-btn" onclick="exportChat()" title="Export conversation">
-          <i class="fas fa-download"></i>
-        </button>
         <button class="header-btn" onclick="showProfileSummary()" title="View profile">
           <i class="fas fa-user-circle"></i>
         </button>
-        <button class="header-btn" onclick="showHelp()" title="Help">
-          <i class="fas fa-question-circle"></i>
+        <button class="header-btn" onclick="toggleTopicBar()" title="Toggle topics" id="toggleTopicsBtn">
+          <i class="fas fa-th-list"></i>
         </button>
         <button class="header-btn restart-btn" onclick="resetChat()" title="Restart chat">
           <i class="fas fa-sync-alt"></i>
@@ -108,28 +82,25 @@
       <!-- Messages will be inserted here -->
     </div>
 
-    <!-- Conversation Controls -->
-    <div class="conversation-controls">
-      <button class="control-btn" onclick="scrollToTop()" title="Scroll to top">
-        <i class="fas fa-arrow-up"></i>
-      </button>
-      <button class="control-btn" onclick="scrollToBottom()" title="Scroll to bottom">
-        <i class="fas fa-arrow-down"></i>
-      </button>
-      <button class="control-btn" onclick="clearMessages()" title="Clear messages">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-      <button class="control-btn" onclick="toggleQuickNav()" title="Quick navigation">
-        <i class="fas fa-compass"></i>
-      </button>
+    <!-- Topic Navigation Bar -->
+    <div class="topic-nav-bar" id="topicNavBar">
+      <div class="topic-nav-header">
+        <span class="topic-nav-title">Quick Topics</span>
+        <button class="topic-nav-toggle" onclick="toggleTopicBar()">
+          <i class="fas fa-chevron-down" id="topicToggleIcon"></i>
+        </button>
+      </div>
+      <div class="topic-buttons" id="topicButtons">
+        <!-- Topic buttons will be inserted here -->
+      </div>
     </div>
 
-    <!-- Action Buttons Area -->
-    <div class="action-buttons" id="actionButtons">
-      <!-- Action buttons will appear here -->
+    <!-- Current Topic Content -->
+    <div class="topic-content" id="topicContent">
+      <!-- Topic-specific content will be inserted here -->
     </div>
-    
-    <!-- Progress & Info -->
+
+    <!-- Progress Bar -->
     <div class="progress-container">
       <div class="progress-info">
         <div class="progress-bar">
@@ -137,12 +108,7 @@
         </div>
         <div class="progress-stats">
           <span id="progressText">Starting conversation...</span>
-          <span class="profile-count" id="profileCount">Profile: 0/6</span>
         </div>
-      </div>
-      <div class="session-info">
-        <span id="sessionTimer">00:00</span>
-        <span class="message-count" id="messageCount">Messages: 0</span>
       </div>
     </div>
   </div>
@@ -155,181 +121,56 @@
         <button class="modal-close" onclick="closeModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="profile-section">
-          <h4><i class="fas fa-passport"></i> Basic Information</h4>
-          <div class="profile-item" id="profileCountry">
-            <div class="profile-icon">🌍</div>
-            <div class="profile-details">
-              <div class="label">Target Country</div>
-              <div class="value">Not selected</div>
-            </div>
-          </div>
-          <div class="profile-item" id="profileLevel">
-            <div class="profile-icon">🎓</div>
-            <div class="profile-details">
-              <div class="label">Study Level</div>
-              <div class="value">Not selected</div>
-            </div>
+        <div class="profile-item" id="profileCountry">
+          <div class="profile-icon">🌍</div>
+          <div class="profile-details">
+            <div class="label">Target Country</div>
+            <div class="value">Not selected</div>
           </div>
         </div>
-
-        <div class="profile-section">
-          <h4><i class="fas fa-chart-line"></i> Academic Profile</h4>
-          <div class="profile-item" id="profileAcademic">
-            <div class="profile-icon">📊</div>
-            <div class="profile-details">
-              <div class="label">Academic Performance</div>
-              <div class="value">Not selected</div>
-            </div>
-          </div>
-          <div class="profile-item" id="profileGap">
-            <div class="profile-icon">⏳</div>
-            <div class="profile-details">
-              <div class="label">Study Gap</div>
-              <div class="value">Not selected</div>
-            </div>
+        <div class="profile-item" id="profileLevel">
+          <div class="profile-icon">🎓</div>
+          <div class="profile-details">
+            <div class="label">Study Level</div>
+            <div class="value">Not selected</div>
           </div>
         </div>
-
-        <div class="profile-section">
-          <h4><i class="fas fa-cogs"></i> Preparation Status</h4>
-          <div class="profile-item" id="profileEnglish">
-            <div class="profile-icon">🗣️</div>
-            <div class="profile-details">
-              <div class="label">English Test Status</div>
-              <div class="value">Not selected</div>
-            </div>
-          </div>
-          <div class="profile-item" id="profileFunding">
-            <div class="profile-icon">💰</div>
-            <div class="profile-details">
-              <div class="label">Funding Plan</div>
-              <div class="value">Not selected</div>
-            </div>
+        <div class="profile-item" id="profileAcademic">
+          <div class="profile-icon">📊</div>
+          <div class="profile-details">
+            <div class="label">Academic Performance</div>
+            <div class="value">Not selected</div>
           </div>
         </div>
-        
-        <div class="profile-completion">
-          <div class="completion-label">Profile Completion</div>
-          <div class="completion-bar">
-            <div class="completion-fill" id="completionFill"></div>
+        <div class="profile-item" id="profileGap">
+          <div class="profile-icon">⏳</div>
+          <div class="profile-details">
+            <div class="label">Study Gap</div>
+            <div class="value">Not selected</div>
           </div>
-          <div class="completion-text" id="completionText">0% Complete</div>
+        </div>
+        <div class="profile-item" id="profileEnglish">
+          <div class="profile-icon">🗣️</div>
+          <div class="profile-details">
+            <div class="label">English Test Status</div>
+            <div class="value">Not selected</div>
+          </div>
+        </div>
+        <div class="profile-item" id="profileFunding">
+          <div class="profile-icon">💰</div>
+          <div class="profile-details">
+            <div class="label">Funding Plan</div>
+            <div class="value">Not selected</div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn-secondary" onclick="editProfile()">
           <i class="fas fa-edit"></i> Edit Profile
         </button>
-        <button class="btn-primary" onclick="shareProfile()">
-          <i class="fas fa-share-alt"></i> Share Profile
-        </button>
       </div>
     </div>
   </div>
-
-  <!-- Help Modal -->
-  <div class="modal" id="helpModal">
-    <div class="modal-content help-modal">
-      <div class="modal-header">
-        <h3><i class="fas fa-question-circle"></i> How to Use This Assistant</h3>
-        <button class="modal-close" onclick="closeHelp()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="help-section">
-          <h4><i class="fas fa-lightbulb"></i> Quick Tips</h4>
-          <ul class="tips-list">
-            <li>Click any button to select your answer</li>
-            <li>Use Back to Menu to return to main topics</li>
-            <li>Profile information is saved automatically</li>
-            <li>Connect with counselors for personalized help</li>
-          </ul>
-        </div>
-        
-        <div class="help-section">
-          <h4><i class="fas fa-bolt"></i> Navigation Shortcuts</h4>
-          <div class="shortcuts">
-            <div class="shortcut">
-              <span class="key">Profile Icon</span>
-              <span class="action">View/Edit your profile</span>
-            </div>
-            <div class="shortcut">
-              <span class="key">Sync Icon</span>
-              <span class="action">Restart conversation</span>
-            </div>
-            <div class="shortcut">
-              <span class="key">Download Icon</span>
-              <span class="action">Export chat history</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="help-section">
-          <h4><i class="fas fa-graduation-cap"></i> About the Advice</h4>
-          <p>This assistant provides guidance based on:</p>
-          <ul class="tips-list">
-            <li>Official embassy/visa requirements</li>
-            <li>University admission standards</li>
-            <li>Common scholarship criteria</li>
-            <li>Typical processing timelines</li>
-          </ul>
-          <p class="disclaimer"><i class="fas fa-exclamation-circle"></i> Always verify with official sources</p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-primary" onclick="closeHelp()">
-          <i class="fas fa-check"></i> Got It, Let's Start!
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quick Navigation Modal -->
-  <div class="modal" id="quickNavModal">
-    <div class="modal-content quicknav-modal">
-      <div class="modal-header">
-        <h3><i class="fas fa-compass"></i> Quick Navigation</h3>
-        <button class="modal-close" onclick="closeQuickNav()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="quicknav-grid">
-          <button class="nav-btn" onclick="jumpToPhase('welcome')">
-            <i class="fas fa-home"></i> Welcome
-          </button>
-          <button class="nav-btn" onclick="jumpToPhase('country')">
-            <i class="fas fa-globe"></i> Country Selection
-          </button>
-          <button class="nav-btn" onclick="jumpToPhase('level')">
-            <i class="fas fa-graduation-cap"></i> Level Selection
-          </button>
-          <button class="nav-btn" onclick="jumpToPhase('topics')">
-            <i class="fas fa-th-list"></i> Topic Menu
-          </button>
-          <button class="nav-btn" onclick="jumpToPhase('financial')">
-            <i class="fas fa-money-bill-wave"></i> Financial Advice
-          </button>
-          <button class="nav-btn" onclick="jumpToPhase('scholarships')">
-            <i class="fas fa-award"></i> Scholarships
-          </button>
-          <button class="nav-btn" onclick="jumpToPhase('visa')">
-            <i class="fas fa-file-contract"></i> Visa Guidance
-          </button>
-          <button class="nav-btn" onclick="jumpToPhase('counselor')">
-            <i class="fas fa-headset"></i> Counselor Connect
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Audio Elements -->
-  <audio id="notificationSound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
-  </audio>
-  
-  <audio id="clickSound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
-  </audio>
 
   <script src="script.js"></script>
 </body>
