@@ -13,9 +13,6 @@ let userProfile = {
 const welcomeScreen = document.getElementById('welcomeScreen');
 const chatContainer = document.getElementById('chatContainer');
 const chatArea = document.getElementById('chatArea');
-const actionButtons = document.getElementById('actionButtons');
-const progressFill = document.getElementById('progressFill');
-const progressText = document.getElementById('progressText');
 const statusText = document.getElementById('statusText');
 const profileModal = document.getElementById('profileModal');
 const helpModal = document.getElementById('helpModal');
@@ -77,7 +74,6 @@ function showCountrySelection() {
     { text: '🇬🇧 United Kingdom', action: () => saveAnswer('targetCountry', 'UK', showLevelSelection), icon: 'fas fa-flag' },
     { text: '🇺🇸 United States', action: () => saveAnswer('targetCountry', 'USA', showLevelSelection), icon: 'fas fa-flag' },
     { text: '🇳🇿 New Zealand', action: () => saveAnswer('targetCountry', 'New Zealand', showLevelSelection), icon: 'fas fa-flag' },
-    { text: '🇳🇵 Nepal (Local)', action: () => saveAnswer('targetCountry', 'Nepal', showLevelSelection), icon: 'fas fa-flag' },
     { text: '🤔 Not Sure Yet', action: () => saveAnswer('targetCountry', 'Not Sure', showLevelSelection), icon: 'fas fa-question' }
   ]);
 }
@@ -179,10 +175,7 @@ function showTopicSelection() {
     { text: '🎓 Scholarships & Funding', action: () => showScholarships(), icon: 'fas fa-award' },
     { text: '📄 Visa & Documentation', action: () => showVisaExpectations(), icon: 'fas fa-file-contract' },
     { text: '🗣️ English Test Guidance', action: () => showEnglishGuidance(), icon: 'fas fa-language' },
-    { text: '🇳🇵 NOC Process Guide', action: () => showNOCGuide(), icon: 'fas fa-passport', className: 'nepal' },
-    { text: '📋 Nepal Documents', action: () => showNepalDocuments(), icon: 'fas fa-file-alt', className: 'nepal' },
-    { text: '⭐ Profile Strength', action: () => showProfileStrength(), icon: 'fas fa-chart-line' },
-    { text: '🏆 Success Stories', action: () => showSuccessStories(), icon: 'fas fa-trophy' },
+    { text: '📅 Timeline Planning', action: () => showIntakeTimelines(), icon: 'fas fa-calendar-day' },
     { text: '🤝 Talk to Counselor', action: () => showCounselorConnection(), icon: 'fas fa-headset' }
   ]);
 }
@@ -199,7 +192,6 @@ function showFinancialRequirements() {
   showActionButtons([
     { text: '🎓 Scholarship Options', action: () => showScholarships(), icon: 'fas fa-award' },
     { text: '📄 Visa Documentation', action: () => showVisaExpectations(), icon: 'fas fa-file-alt' },
-    { text: '🇳🇵 Nepal Bank Info', action: () => showNepalBankInfo(), icon: 'fas fa-university', className: 'nepal' },
     { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
   ]);
 }
@@ -214,7 +206,6 @@ function showScholarships() {
   showActionButtons([
     { text: '💰 Financial Planning', action: () => showFinancialRequirements(), icon: 'fas fa-calculator' },
     { text: '📅 Application Timeline', action: () => showIntakeTimelines(), icon: 'fas fa-calendar' },
-    { text: '⭐ Profile Strength', action: () => showProfileStrength(), icon: 'fas fa-chart-line' },
     { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
   ]);
 }
@@ -224,51 +215,11 @@ function showVisaExpectations() {
 
   const gap = userProfile.studyGap || 'No Gap';
 
-  addMessage('bot', `📄 **Visa Requirements for Nepali Students**\n\n📑 **Key Documents:**\n✅ University offer letter\n✅ Financial proof (bank statement last 6 months)\n✅ English test results (IELTS/PTE)\n✅ Genuine student statement (SOP)\n✅ Police clearance certificate\n✅ Health insurance\n\n${gap !== 'No Gap' ? `📝 **Gap Explanation:** Since you have a ${gap.toLowerCase()}, prepare a detailed explanation letter with supporting documents.` : ''}\n\n🔗 **Official Resources:**\n• Australia: https://immi.homeaffairs.gov.au\n• Canada: https://www.canada.ca/en/immigration-refugees-citizenship.html\n• UK: https://www.gov.uk/student-visa\n• USA: https://www.ustraveldocs.com/np\n• VFS Nepal: https://visa.vfsglobal.com/npl/en`);
+  addMessage('bot', `📄 **Visa Requirements**\n\nKey documents needed:\n• University offer letter\n• Financial proof\n• English test results\n• Genuine student statement\n\n${gap !== 'No Gap' ? `📝 Since you have a ${gap.toLowerCase()}, prepare a clear explanation for this gap.` : ''}`);
 
   showActionButtons([
-    { text: '🇳🇵 NOC Process', action: () => showNOCGuide(), icon: 'fas fa-passport', className: 'nepal' },
-    { text: '📋 Nepal Documents', action: () => showNepalDocuments(), icon: 'fas fa-file-alt', className: 'nepal' },
+    { text: '🗣️ English Test Help', action: () => showEnglishGuidance(), icon: 'fas fa-language' },
     { text: '🤝 Counselor Support', action: () => showCounselorConnection(), icon: 'fas fa-headset' },
-    { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
-  ]);
-}
-
-// New NOC Guide function
-function showNOCGuide() {
-  updateStatus('NOC Guidance');
-
-  addMessage('bot', `🇳🇵 **NOC (No Objection Certificate) Guide**\n\nTo pay fees from Nepal, you MUST have an NOC from the Ministry of Education.\n\n📝 **Process:**\n1. Apply online at the MOEST NOC portal\n2. Required: Offer letter, citizenship copy\n3. Fee: NPR 2,000 per country/level\n\n⚠️ **Important:**\n• Apply immediately after receiving offer letter\n• Processing takes 7-15 working days\n• Keep digital and printed copies\n\n🔗 **Official Link:**\nhttps://noc.moest.gov.np`);
-
-  showActionButtons([
-    { text: '🇳🇵 Nepal Bank Loans', action: () => showNepalBankInfo(), icon: 'fas fa-university', className: 'nepal' },
-    { text: '📄 Visa Documents', action: () => showVisaExpectations(), icon: 'fas fa-file-alt' },
-    { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
-  ]);
-}
-
-// Nepal Document Checklist
-function showNepalDocuments() {
-  updateStatus('Nepal-Specific Docs');
-
-  addMessage('bot', `📋 **Nepal-Specific Document Checklist**\n\n📑 **Mandatory Documents:**\n✅ Citizenship Certificate (notarized English translation)\n✅ Birth Certificate (notarized English translation)\n✅ Relationship Certificates (if sponsored by parents)\n✅ Academic Certificates (transcript, character certificate)\n✅ Police Clearance Certificate\n\n🏦 **Bank Specifics:**\n• Nabil Bank - Education Loan specialists\n• Global IME - Balance certificate experts\n• SBI Nepal - Popular for student loans\n\n💡 **Tip:** Get documents translated by registered translators only`);
-
-  showActionButtons([
-    { text: '🇳🇵 NOC Process', action: () => showNOCGuide(), icon: 'fas fa-passport', className: 'nepal' },
-    { text: '💰 Financial Planning', action: () => showFinancialRequirements(), icon: 'fas fa-calculator' },
-    { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
-  ]);
-}
-
-// Nepal Bank Information
-function showNepalBankInfo() {
-  updateStatus('Nepal Bank Info');
-
-  addMessage('bot', `🏦 **Nepal Bank Guide for Education Loans**\n\n**Top Banks for Students:**\n\n🏆 **Nabil Bank**\n• Special education loan packages\n• Collateral: 100% of loan amount\n• Rate: 8-10% p.a.\n\n🏆 **Global IME Bank**\n• Fast balance certificates\n• Good forex rates\n• Multiple branch verification\n\n🏆 **SBI Nepal**\n• Parent bank in India\n• Easy remittance to India/Australia\n• Education loan specialists\n\n📝 **Requirements:**\n• Collateral (property/fixed deposit)\n• Income proof of co-applicant\n• Admission letter from university`);
-
-  showActionButtons([
-    { text: '📋 Document Checklist', action: () => showNepalDocuments(), icon: 'fas fa-file-alt', className: 'nepal' },
-    { text: '💰 Financial Planning', action: () => showFinancialRequirements(), icon: 'fas fa-calculator' },
     { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
   ]);
 }
@@ -278,12 +229,11 @@ function showEnglishGuidance() {
 
   const status = userProfile.englishTestStatus || 'Not Started';
 
-  addMessage('bot', `🗣️ **English Test Guidance**\n\n${getEnglishAdvice(status)}\n\n📊 General requirements:\n• Diploma/Bachelor's: IELTS 6.0-6.5\n• Master's/PhD: IELTS 6.5-7.0+\n\nBook through official test centers only.`);
+  addMessage('bot', `🗣️ **English Test Guidance**\n\n${getEnglishAdvice(status)}\n\n📊 General requirements:\n• Diploma/Bachelor\'s: IELTS 6.0-6.5\n• Master\'s/PhD: IELTS 6.5-7.0+\n\nBook through official test centers only.`);
 
   showActionButtons([
     { text: '📅 Timeline Planning', action: () => showIntakeTimelines(), icon: 'fas fa-calendar' },
     { text: '🎓 University Requirements', action: () => showScholarships(), icon: 'fas fa-university' },
-    { text: '⭐ Profile Strength', action: () => showProfileStrength(), icon: 'fas fa-chart-line' },
     { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
   ]);
 }
@@ -308,7 +258,6 @@ function showIntakeTimelines() {
 
   showActionButtons([
     { text: '🤝 Get Expert Help', action: () => showCounselorConnection(), icon: 'fas fa-headset' },
-    { text: '🇳🇵 NOC Timeline', action: () => showNOCGuide(), icon: 'fas fa-passport', className: 'nepal' },
     { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
   ]);
 }
@@ -319,136 +268,9 @@ function getIntakePeriods(country) {
     'Canada': 'January, May, September',
     'UK': 'January, September',
     'USA': 'January, August',
-    'New Zealand': 'February, July',
-    'Nepal': 'March/April, July/August'
+    'New Zealand': 'February, July'
   };
   return intakes[country] || 'Varies - check university websites';
-}
-
-// Profile Strength Evaluation
-function showProfileStrength() {
-  updateStatus('Profile Evaluation');
-
-  const score = calculateProfileScore();
-  const feedback = getProfileFeedback(score);
-
-  addMessage('bot', `⭐ **Your Profile Strength: ${score}/10**\n\n${feedback}\n\n📊 **Breakdown:**\n• Academic: ${getAcademicScore()}/3\n• English: ${getEnglishScore()}/3\n• Planning: ${getPlanningScore()}/3\n• Gap: ${getGapScore()}/1`);
-
-  showActionButtons([
-    { text: '🎓 Improve Profile', action: () => showImprovementTips(), icon: 'fas fa-chart-line-up' },
-    { text: '🗣️ English Test Help', action: () => showEnglishGuidance(), icon: 'fas fa-language' },
-    { text: '🏆 Success Stories', action: () => showSuccessStories(), icon: 'fas fa-trophy' },
-    { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
-  ]);
-}
-
-function calculateProfileScore() {
-  let score = 5; // Base score
-  
-  // Academic Performance
-  if (userProfile.academicPerformance === 'Strong') score += 3;
-  else if (userProfile.academicPerformance === 'Good') score += 2;
-  else if (userProfile.academicPerformance === 'Average') score += 1;
-  
-  // English Test
-  if (userProfile.englishTestStatus === 'Completed') score += 3;
-  else if (userProfile.englishTestStatus === 'Booked') score += 2;
-  
-  // Study Gap
-  if (userProfile.studyGap === 'No Gap') score += 1;
-  else if (userProfile.studyGap === 'More than 3 Years') score -= 1;
-  
-  // Funding Plan
-  if (userProfile.fundingPlan === 'Family Sponsor') score += 1;
-  else if (userProfile.fundingPlan === 'Education Loan') score += 1;
-  
-  return Math.min(10, Math.max(1, score));
-}
-
-function getAcademicScore() {
-  if (userProfile.academicPerformance === 'Strong') return 3;
-  if (userProfile.academicPerformance === 'Good') return 2;
-  if (userProfile.academicPerformance === 'Average') return 1;
-  return 0;
-}
-
-function getEnglishScore() {
-  if (userProfile.englishTestStatus === 'Completed') return 3;
-  if (userProfile.englishTestStatus === 'Booked') return 2;
-  if (userProfile.englishTestStatus === 'Not Started') return 0;
-  return 1;
-}
-
-function getPlanningScore() {
-  let score = 1; // Base
-  if (userProfile.targetCountry && userProfile.targetCountry !== 'Not Sure') score += 1;
-  if (userProfile.intendedLevel) score += 1;
-  return Math.min(3, score);
-}
-
-function getGapScore() {
-  return userProfile.studyGap === 'No Gap' ? 1 : 0;
-}
-
-function getProfileFeedback(score) {
-  if (score >= 9) return '🎉 **Excellent Profile!** You have strong chances at top universities. Focus on application essays and references.';
-  if (score >= 7) return '👍 **Good Profile!** You are competitive for most programs. Work on strengthening your statement of purpose.';
-  if (score >= 5) return '📝 **Average Profile.** Consider improving English scores or getting work experience to strengthen application.';
-  return '💡 **Needs Improvement.** We recommend:\n1. Boost English test scores\n2. Consider pathway programs\n3. Stronger financial documentation';
-}
-
-function showImprovementTips() {
-  updateStatus('Improvement Tips');
-  
-  let tips = '🎯 **Personalized Improvement Tips:**\n\n';
-  
-  if (userProfile.academicPerformance === 'Below Average' || userProfile.academicPerformance === 'Average') {
-    tips += '📚 **Academic:**\n• Consider relevant work experience/internships\n• Take additional certification courses\n• Get strong recommendation letters\n\n';
-  }
-  
-  if (userProfile.englishTestStatus === 'Not Started') {
-    tips += '🗣️ **English Test:**\n• Start preparation immediately\n• Target IELTS 7.0+ or PTE 65+\n• Consider test preparation classes\n\n';
-  }
-  
-  if (userProfile.studyGap !== 'No Gap') {
-    tips += '⏳ **Study Gap:**\n• Prepare detailed gap explanation letter\n• Show relevant activities during gap period\n• Highlight skills gained\n\n';
-  }
-  
-  tips += '💡 **General Tips:**\n• Start application process 12 months early\n• Connect with alumni from target universities\n• Build a strong statement of purpose';
-  
-  addMessage('bot', tips);
-  
-  showActionButtons([
-    { text: '🏆 Success Stories', action: () => showSuccessStories(), icon: 'fas fa-trophy' },
-    { text: '🤝 Counselor Help', action: () => showCounselorConnection(), icon: 'fas fa-headset' },
-    { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
-  ]);
-}
-
-// Success Stories
-function showSuccessStories() {
-  updateStatus('Success Stories');
-
-  addMessage('bot', `🏆 **Success Stories from Nepal**\n\n<div class="success-card">
-    <h5><i class="fas fa-user-graduate"></i> Sushant from Kathmandu</h5>
-    <p>• GPA: 3.2/4.0 | IELTS: 7.0<br>• Admitted: Monash University (Australia)<br>• Key: Strong personal statement + internship experience</p>
-  </div>
-  
-  <div class="success-card">
-    <h5><i class="fas fa-user-graduate"></i> Anjali from Pokhara</h5>
-    <p>• Gap: 2 years | No English test initially<br>• Admitted: Centennial College (Canada)<br>• Key: Pathway program + strong recommendation letters</p>
-  </div>
-  
-  <div class="success-card">
-    <h5><i class="fas fa-user-graduate"></i> Rajan from Butwal</h5>
-    <p>• Academic: Average | PTE: 65<br>• Admitted: University of Auckland<br>• Key: Professional work experience + clear career goals</p>
-  </div>`);
-
-  showActionButtons([
-    { text: '⭐ Check My Profile', action: () => showProfileStrength(), icon: 'fas fa-chart-line' },
-    { text: '🤝 Talk to Counselor', action: () => showCounselorConnection(), icon: 'fas fa-headset' },
-    { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
-  ]);
 }
 
 function showCounselorConnection() {
@@ -459,14 +281,13 @@ function showCounselorConnection() {
   showActionButtons([
     { text: '📱 Connect on WhatsApp', action: () => connectViaWhatsApp(), type: 'primary', icon: 'fab fa-whatsapp' },
     { text: '📞 Schedule a Call', action: () => scheduleCall(), icon: 'fas fa-phone-alt' },
-    { text: '🇳🇵 Nepal-Specific Help', action: () => showNepalDocuments(), icon: 'fas fa-file-alt', className: 'nepal' },
     { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
   ]);
 }
 
 function connectViaWhatsApp() {
-  const phone = '+9779801234567'; // Nepal number
-  const message = `Hello! I need study abroad consultation. My profile:\nCountry: ${userProfile.targetCountry || 'Not selected'}\nLevel: ${userProfile.intendedLevel || 'Not selected'}\nAcademic: ${userProfile.academicPerformance || 'Not selected'}`;
+  const phone = '+1234567890';
+  const message = `Hello! I need study abroad consultation. My profile:\nCountry: ${userProfile.targetCountry || 'Not selected'}\nLevel: ${userProfile.intendedLevel || 'Not selected'}`;
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
 
@@ -513,22 +334,61 @@ function formatMessage(text) {
 }
 
 function showActionButtons(buttons) {
-  actionButtons.innerHTML = '';
+  // Remove existing action buttons
+  const existingActionButtons = document.querySelectorAll('.action-buttons-message');
+  existingActionButtons.forEach(btn => btn.remove());
+  
+  // Remove existing progress bars
+  const existingProgress = document.querySelectorAll('.progress-message');
+  existingProgress.forEach(prog => prog.remove());
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.className = 'message bot-message action-buttons-message';
+  
+  let buttonsHTML = '<div class="action-buttons">';
+  
   buttons.forEach(btn => {
-    const button = document.createElement('button');
-    button.className = `action-btn ${btn.type || ''} ${btn.className || ''}`;
-    button.innerHTML = `
-            ${btn.icon ? `<i class="${btn.icon} btn-icon"></i>` : ''}
-            <span class="btn-text">${btn.text}</span>
-        `;
-    button.onclick = btn.action;
-    actionButtons.appendChild(button);
+    buttonsHTML += `
+      <button class="action-btn ${btn.type || ''}">
+        ${btn.icon ? `<i class="${btn.icon} btn-icon"></i>` : ''}
+        <span class="btn-text">${btn.text}</span>
+      </button>
+    `;
   });
+  
+  buttonsHTML += '</div>';
+  buttonContainer.innerHTML = buttonsHTML;
+  
+  chatArea.appendChild(buttonContainer);
+  
+  // Attach event listeners
+  const actionBtns = buttonContainer.querySelectorAll('.action-btn');
+  actionBtns.forEach((button, index) => {
+    button.onclick = buttons[index].action;
+  });
+  
+  chatArea.scrollTop = chatArea.scrollHeight;
 }
 
 function updateProgress(percent, text) {
-  progressFill.style.width = `${percent}%`;
-  progressText.textContent = text;
+  // Remove existing progress bars
+  const existingProgress = document.querySelectorAll('.progress-message');
+  existingProgress.forEach(prog => prog.remove());
+
+  const progressDiv = document.createElement('div');
+  progressDiv.className = 'message bot-message progress-message';
+  
+  progressDiv.innerHTML = `
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${percent}%"></div>
+      </div>
+      <div class="progress-text">${text}</div>
+    </div>
+  `;
+  
+  chatArea.appendChild(progressDiv);
+  chatArea.scrollTop = chatArea.scrollHeight;
 }
 
 function updateStatus(text) {
@@ -596,7 +456,6 @@ function resetChat() {
     };
     localStorage.removeItem('studyAbroadProfile');
     chatArea.innerHTML = '';
-    actionButtons.innerHTML = '';
     showWelcomePhase();
   }
 }
