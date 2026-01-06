@@ -18,6 +18,9 @@ const profileModal = document.getElementById('profileModal');
 const helpModal = document.getElementById('helpModal');
 const notificationSound = document.getElementById('notificationSound');
 
+// Content Library from content-data.js
+const content = window.studyAbroadContent || {};
+
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
   // Auto-start chat if returning user
@@ -154,7 +157,7 @@ function showProfileConfirmation() {
 
   localStorage.setItem('studyAbroadProfile', JSON.stringify(userProfile));
 
-  addMessage('bot', `✅ Perfect! I've saved your profile.\n\n📋 Summary:\n• Country: ${userProfile.targetCountry}\n• Level: ${userProfile.intendedLevel}\n• Academic: ${userProfile.academicPerformance}\n\nNow, what would you like to explore?`);
+  addMessage('bot', `✅ Perfect! I've saved your profile.\n\n📋 Summary:\n• Country: ${userProfile.targetCountry}\n• Level: ${userProfile.intendedLevel}\n• Academic: ${userProfile.academicPerformance}\n• Funding: ${userProfile.fundingPlan}\n\nNow, what would you like to explore?`);
 
   updateProfileDisplay();
 
@@ -180,14 +183,47 @@ function showTopicSelection() {
   ]);
 }
 
-// Topic Response Functions
+// Topic Response Functions with Dynamic Content
 function showFinancialRequirements() {
   updateStatus('Financial Guidance');
 
-  const country = userProfile.targetCountry || 'your chosen country';
-  const level = userProfile.intendedLevel || 'your study level';
+  const country = userProfile.targetCountry;
+  const level = userProfile.intendedLevel;
+  
+  let content = `💰 **Financial Requirements**\n\n`;
+  
+  // Check if we have specific content for this country and level
+  if (content.financialRequirements && 
+      content.financialRequirements[country] &&
+      content.financialRequirements[country][level]) {
+    
+    const specificContent = content.financialRequirements[country][level];
+    content = `${specificContent.title}\n\n${specificContent.content}`;
+    
+    // Add tips if available
+    if (specificContent.tips && specificContent.tips.length > 0) {
+      content += `\n\n💡 **Tips:**\n`;
+      specificContent.tips.forEach(tip => {
+        content += `• ${tip}\n`;
+      });
+    }
+  } else {
+    // Generic content if no specific data
+    content += `For ${level || 'your chosen level'} studies in ${country || 'your chosen country'}, you'll need to show funds for:\n\n• Tuition fees (first year)\n• Living expenses (12 months)\n• Health insurance coverage\n\n💡 Tip: Most universities provide specific cost estimates on their websites.`;
+    
+    // Add country-specific general info if available
+    if (country && content.financialRequirements && content.financialRequirements[country]) {
+      const countryInfo = Object.values(content.financialRequirements[country])[0];
+      if (countryInfo && countryInfo.content) {
+        content += `\n\n**General ${country} Requirements:**\n`;
+        // Extract first paragraph for general info
+        const firstPara = countryInfo.content.split('\n\n')[0];
+        content += firstPara;
+      }
+    }
+  }
 
-  addMessage('bot', `💰 **Financial Requirements for ${country}**\n\nFor ${level} studies in ${country}, you'll need to show funds for:\n\n• Tuition fees (first year)\n• Living expenses (12 months)\n• Health insurance coverage\n\n💡 Tip: Most universities provide specific cost estimates on their websites.`);
+  addMessage('bot', content);
 
   showActionButtons([
     { text: '🎓 Scholarship Options', action: () => showScholarships(), icon: 'fas fa-award' },
@@ -200,8 +236,44 @@ function showScholarships() {
   updateStatus('Scholarship Information');
 
   const academic = userProfile.academicPerformance || 'your academic level';
+  
+  let content = `🎓 **Scholarship Opportunities**\n\n`;
+  
+  // Get scholarship info based on academic performance
+  if (content.scholarships && 
+      content.scholarships.byPerformance &&
+      content.scholarships.byPerformance[academic]) {
+    
+    const scholarshipInfo = content.scholarships.byPerformance[academic];
+    content = `${scholarshipInfo.title}\n\n`;
+    
+    if (scholarshipInfo.opportunities && scholarshipInfo.opportunities.length > 0) {
+      scholarshipInfo.opportunities.forEach(opp => {
+        content += `• ${opp}\n`;
+      });
+    }
+    
+    if (scholarshipInfo.eligibility) {
+      content += `\n📋 **Eligibility:** ${scholarshipInfo.eligibility}\n`;
+    }
+    
+    if (scholarshipInfo.deadlines) {
+      content += `⏰ **Apply:** ${scholarshipInfo.deadlines}\n`;
+    }
+    
+    // Add tips if available
+    if (scholarshipInfo.tips && scholarshipInfo.tips.length > 0) {
+      content += `\n💡 **Application Tips:**\n`;
+      scholarshipInfo.tips.forEach(tip => {
+        content += `• ${tip}\n`;
+      });
+    }
+  } else {
+    // Generic content
+    content += `Based on your ${academic} academic profile:\n\n1. **University Scholarships** - Check each university's website\n2. **Country Scholarships** - Government-funded programs\n3. **External Scholarships** - Private organizations\n\n⏰ Apply 6-8 months before your intended start date.`;
+  }
 
-  addMessage('bot', `🎓 **Scholarship Opportunities**\n\nBased on your ${academic} academic profile:\n\n1. **University Scholarships** - Check each university's website\n2. **Country Scholarships** - Government-funded programs\n3. **External Scholarships** - Private organizations\n\n⏰ Apply 6-8 months before your intended start date.`);
+  addMessage('bot', content);
 
   showActionButtons([
     { text: '💰 Financial Planning', action: () => showFinancialRequirements(), icon: 'fas fa-calculator' },
@@ -213,9 +285,38 @@ function showScholarships() {
 function showVisaExpectations() {
   updateStatus('Visa Guidance');
 
+  const country = userProfile.targetCountry;
   const gap = userProfile.studyGap || 'No Gap';
+  
+  let content = `📄 **Visa Requirements**\n\n`;
+  
+  // Get visa info for the selected country
+  if (content.visaRequirements && content.visaRequirements[country]) {
+    
+    const visaInfo = content.visaRequirements[country].all || content.visaRequirements[country];
+    
+    content = `${visaInfo.title}\n\n${visaInfo.content}`;
+    
+    // Add checklist if available
+    if (visaInfo.checklist && visaInfo.checklist.length > 0) {
+      content += `\n\n✅ **Document Checklist:**\n`;
+      visaInfo.checklist.forEach(item => {
+        content += `• ${item}\n`;
+      });
+    }
+  } else {
+    // Generic content
+    content += `Key documents needed:\n• University offer letter\n• Financial proof\n• English test results\n• Genuine student statement\n• Health insurance\n• Passport valid for 6+ months`;
+  }
 
-  addMessage('bot', `📄 **Visa Requirements**\n\nKey documents needed:\n• University offer letter\n• Financial proof\n• English test results\n• Genuine student statement\n\n${gap !== 'No Gap' ? `📝 Since you have a ${gap.toLowerCase()}, prepare a clear explanation for this gap.` : ''}`);
+  // Add gap explanation if applicable
+  if (content.gapExplanations && content.gapExplanations[gap]) {
+    content += `\n\n📝 **Study Gap Information:**\n${content.gapExplanations[gap]}`;
+  } else if (gap !== 'No Gap') {
+    content += `\n\n📝 **Note about study gap:** Since you have a ${gap.toLowerCase()}, prepare a clear explanation including:\n• What you did during the gap\n• How it relates to your study goals\n• Any skills/experience gained`;
+  }
+
+  addMessage('bot', content);
 
   showActionButtons([
     { text: '🗣️ English Test Help', action: () => showEnglishGuidance(), icon: 'fas fa-language' },
@@ -227,9 +328,43 @@ function showVisaExpectations() {
 function showEnglishGuidance() {
   updateStatus('English Test Help');
 
+  const country = userProfile.targetCountry;
+  const level = userProfile.intendedLevel;
   const status = userProfile.englishTestStatus || 'Not Started';
+  
+  let content = `🗣️ **English Test Guidance**\n\n`;
+  
+  // Get specific English requirements
+  if (content.englishRequirements && 
+      content.englishRequirements[country] &&
+      content.englishRequirements[country][level]) {
+    
+    const engInfo = content.englishRequirements[country][level];
+    content += `**${level} Requirements for ${country}:**\n`;
+    content += `• Minimum: ${engInfo.requirement}\n`;
+    
+    if (engInfo.alternatives && engInfo.alternatives.length > 0) {
+      content += `\n**Accepted Alternatives:**\n`;
+      engInfo.alternatives.forEach(alt => {
+        content += `• ${alt}\n`;
+      });
+    }
+    
+    if (engInfo.exceptions) {
+      content += `\n**Exceptions:** ${engInfo.exceptions}\n`;
+    }
+  } else {
+    // Generic requirements
+    content += `📊 General English requirements:\n`;
+    content += `• Diploma/Bachelor's: IELTS 6.0-6.5\n`;
+    content += `• Master's/PhD: IELTS 6.5-7.0+\n`;
+    content += `• Book through official test centers only.\n`;
+  }
 
-  addMessage('bot', `🗣️ **English Test Guidance**\n\n${getEnglishAdvice(status)}\n\n📊 General requirements:\n• Diploma/Bachelor\'s: IELTS 6.0-6.5\n• Master\'s/PhD: IELTS 6.5-7.0+\n\nBook through official test centers only.`);
+  // Add status-specific advice
+  content += `\n${getEnglishAdvice(status)}`;
+
+  addMessage('bot', content);
 
   showActionButtons([
     { text: '📅 Timeline Planning', action: () => showIntakeTimelines(), icon: 'fas fa-calendar' },
@@ -241,11 +376,11 @@ function showEnglishGuidance() {
 function getEnglishAdvice(status) {
   switch (status) {
     case 'Completed':
-      return '✅ Great! Make sure your scores meet the requirements of your chosen universities.';
+      return '✅ **Great!** Make sure your scores meet the requirements of your chosen universities. Keep your test results valid for visa application.';
     case 'Booked':
-      return '📅 Good planning! Schedule your test 2-3 months before application deadlines.';
+      return '📅 **Good planning!** Schedule your test 2-3 months before application deadlines. Allow time for retakes if needed.';
     default:
-      return '⏰ Start preparing now! Most students need 2-4 months of preparation before taking the test.';
+      return '⏰ **Start preparing now!** Most students need 2-4 months of preparation before taking the test. Consider test preparation courses if needed.';
   }
 }
 
@@ -253,8 +388,38 @@ function showIntakeTimelines() {
   updateStatus('Timeline Planning');
 
   const country = userProfile.targetCountry || 'your chosen country';
+  
+  let content = `📅 **Application Timeline for ${country}**\n\n`;
+  
+  // Get specific timeline based on country
+  if (content.intakeTimelines && content.intakeTimelines[country]) {
+    const timelineInfo = content.intakeTimelines[country];
+    content += `**Main Intakes:** ${timelineInfo.intakes}\n\n`;
+    
+    if (timelineInfo.deadlines) {
+      content += `**Application Deadlines:**\n`;
+      Object.entries(timelineInfo.deadlines).forEach(([intake, deadline]) => {
+        content += `• ${intake} intake: ${deadline}\n`;
+      });
+    }
+    
+    if (timelineInfo.timeline) {
+      content += `\n${timelineInfo.timeline}`;
+    }
+  } else {
+    // Generic timeline
+    content += `Main intakes:\n• ${getIntakePeriods(country)}\n\n`;
+    content += `**Recommended schedule:**\n`;
+    content += `• Now: Research & shortlist universities\n`;
+    content += `• +1-2 months: Prepare and take English tests\n`;
+    content += `• +3-4 months: Submit applications\n`;
+    content += `• +6-8 months: Apply for visa\n`;
+    content += `• +8-10 months: Arrange accommodation\n`;
+    content += `• +11-12 months: Pre-departure preparations\n\n`;
+    content += `**Start early for best options!**`;
+  }
 
-  addMessage('bot', `📅 **Intake Timeline for ${country}**\n\nMain intakes:\n• ${getIntakePeriods(country)}\n\n📋 Recommended schedule:\n• Now: Research & shortlist\n• +1-2 months: English test\n• +3-4 months: Applications\n• +6-8 months: Visa process\n\nStart early for best options!`);
+  addMessage('bot', content);
 
   showActionButtons([
     { text: '🤝 Get Expert Help', action: () => showCounselorConnection(), icon: 'fas fa-headset' },
@@ -276,32 +441,47 @@ function getIntakePeriods(country) {
 function showCounselorConnection() {
   updateStatus('Counselor Connection');
 
-  addMessage('bot', `🤝 **Free Expert Consultation**\n\nOur study abroad counselors can help you:\n\n• Choose the right universities\n• Review your application documents\n• Guide visa preparation\n• Provide personalized timeline\n\nAll consultations are free!`);
+  addMessage('bot', `🤝 **Free Expert Consultation**\n\nOur study abroad counselors can help you:\n\n• Choose the right universities and courses\n• Review your application documents\n• Guide you through visa preparation\n• Provide personalized timeline\n• Scholarship application assistance\n\nAll consultations are **completely free!**`);
 
   showActionButtons([
     { text: '📱 Connect on WhatsApp', action: () => connectViaWhatsApp(), type: 'primary', icon: 'fab fa-whatsapp' },
     { text: '📞 Schedule a Call', action: () => scheduleCall(), icon: 'fas fa-phone-alt' },
+    { text: '📧 Email Inquiry', action: () => sendEmail(), icon: 'fas fa-envelope' },
     { text: '🏠 Back to Menu', action: () => showTopicSelection(), icon: 'fas fa-home' }
   ]);
 }
 
 function connectViaWhatsApp() {
   const phone = '+1234567890';
-  const message = `Hello! I need study abroad consultation. My profile:\nCountry: ${userProfile.targetCountry || 'Not selected'}\nLevel: ${userProfile.intendedLevel || 'Not selected'}`;
+  const message = `Hello! I need study abroad consultation. My profile:\nCountry: ${userProfile.targetCountry || 'Not selected'}\nLevel: ${userProfile.intendedLevel || 'Not selected'}\nAcademic: ${userProfile.academicPerformance || 'Not selected'}`;
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
 
   addMessage('user', 'Requested WhatsApp consultation');
   setTimeout(() => {
-    addMessage('bot', '✅ A counselor will contact you on WhatsApp shortly! Need anything else?');
+    addMessage('bot', '✅ A counselor will contact you on WhatsApp shortly! They can help with:\n• University selection\n• Application process\n• Visa guidance\n• Scholarship applications\n\nNeed anything else?');
     setTimeout(() => showTopicSelection(), 1500);
   }, 500);
 }
 
 function scheduleCall() {
-  addMessage('user', 'Requested callback');
+  addMessage('user', 'Requested callback consultation');
   setTimeout(() => {
-    addMessage('bot', '📞 Great! A counselor will call you within 24 hours. For immediate help, try WhatsApp.');
+    addMessage('bot', '📞 Great! A counselor will call you within 24 hours at your preferred time.\n\nFor immediate help, try WhatsApp or email.\n\n**Office Hours:** 9 AM - 6 PM (Monday to Saturday)');
+    setTimeout(() => showTopicSelection(), 1500);
+  }, 500);
+}
+
+function sendEmail() {
+  const email = 'consultation@studyabroad.com';
+  const subject = 'Study Abroad Consultation Request';
+  const body = `Hello,\n\nI would like to schedule a consultation for study abroad.\n\nMy profile:\n- Target Country: ${userProfile.targetCountry || 'Not selected'}\n- Study Level: ${userProfile.intendedLevel || 'Not selected'}\n- Academic Performance: ${userProfile.academicPerformance || 'Not selected'}\n- Preferred Contact Time: \n\nThank you.`;
+  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoLink;
+  
+  addMessage('user', 'Sent email inquiry');
+  setTimeout(() => {
+    addMessage('bot', '📧 Email sent successfully! A counselor will respond within 24 hours.\n\nCheck your spam folder if you don\'t see our reply.');
     setTimeout(() => showTopicSelection(), 1500);
   }, 500);
 }
