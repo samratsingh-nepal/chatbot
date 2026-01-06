@@ -22,16 +22,16 @@
 
       <div class="welcome-stats">
         <div class="stat">
-          <div class="stat-number">9</div>
+          <div class="stat-number">6</div>
+          <div class="stat-label">Quick Questions</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">5</div>
           <div class="stat-label">Expert Topics</div>
         </div>
         <div class="stat">
-          <div class="stat-number">⭐</div>
-          <div class="stat-label">Profile Scoring</div>
-        </div>
-        <div class="stat">
-          <div class="stat-number">🇳🇵</div>
-          <div class="stat-label">Nepal Specific</div>
+          <div class="stat-number">2-3</div>
+          <div class="stat-label">Minutes</div>
         </div>
       </div>
 
@@ -47,10 +47,6 @@
         <div class="feature">
           <i class="fas fa-check-circle"></i>
           <span>Personalized responses</span>
-        </div>
-        <div class="feature">
-          <i class="fas fa-check-circle"></i>
-          <span>🇳🇵 Nepal-specific guidance</span>
         </div>
       </div>
 
@@ -93,22 +89,14 @@
       </div>
     </div>
 
-    <!-- Chat Area -->
-    <div class="chat-area" id="chatArea">
-      <!-- Messages will be inserted here -->
-    </div>
-
-    <!-- Action Buttons Area -->
-    <div class="action-buttons" id="actionButtons">
-      <!-- Action buttons will appear here -->
-    </div>
-
-    <!-- Progress Bar -->
-    <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
+    <!-- Main Content Area -->
+    <div class="main-content-area">
+      <!-- Chat Area (now contains everything) -->
+      <div class="chat-area-wrapper">
+        <div class="chat-area" id="chatArea">
+          <!-- Messages, buttons, and progress will be inserted here -->
+        </div>
       </div>
-      <div class="progress-text" id="progressText">Starting conversation...</div>
     </div>
   </div>
 
@@ -167,9 +155,6 @@
         <button class="btn-secondary" onclick="editProfile()">
           <i class="fas fa-edit"></i> Edit Profile
         </button>
-        <button class="btn-primary" onclick="showProfileStrength()">
-          <i class="fas fa-chart-line"></i> Check Profile Score
-        </button>
       </div>
     </div>
   </div>
@@ -199,19 +184,12 @@
         <div class="help-step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h4>🇳🇵 Nepal-Specific Guidance</h4>
-            <p>Get specialized advice on NOC, bank documentation, and Nepali student requirements.</p>
+            <h4>Get Personalized Advice</h4>
+            <p>Receive guidance tailored to your specific profile and situation.</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-number">4</div>
-          <div class="step-content">
-            <h4>⭐ Profile Strength Check</h4>
-            <p>Get your profile score and personalized improvement tips.</p>
-          </div>
-        </div>
-        <div class="help-step">
-          <div class="step-number">5</div>
           <div class="step-content">
             <h4>Connect with Counselors</h4>
             <p>Get free consultation with study abroad experts when needed.</p>
